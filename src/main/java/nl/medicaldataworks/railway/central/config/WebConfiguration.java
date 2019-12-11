@@ -1,9 +1,9 @@
 package nl.medicaldataworks.railway.central.config;
 
-import org.springframework.boot.web.server.MimeMappings;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.boot.web.servlet.ServletContextInitializer;
+import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
+import org.springframework.context.annotation.Configuration;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -11,10 +11,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 
 import static java.net.URLDecoder.decode;
-
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.MediaType;
 
 @Configuration
 public class WebConfiguration implements WebServerFactoryCustomizer<WebServerFactory> {

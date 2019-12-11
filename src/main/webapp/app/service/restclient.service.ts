@@ -22,13 +22,7 @@ export class RestclientService {
 
   constructor(private http: HttpClient, private router: Router) {
     this.projectIndex = this.defaultProjectIndex;
-    this.getProjectsForUser().subscribe(projects => {
-      this.projectsForUser = projects;
-      console.log("Projects for user: " + JSON.stringify(this.projectsForUser));
-    });
-    this.router.routeReuseStrategy.shouldReuseRoute = function() {
-      return false;
-    };
+    //TODO: Removed getProjectsForUser and reuseroute, see GIT.
   }
 
   private getProjectsForUser() {

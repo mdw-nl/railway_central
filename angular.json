@@ -5,27 +5,26 @@
   "projects": {
     "railway-central": {
       "root": "",
-      "sourceRoot": "src",
+      "sourceRoot": "src/main/webapp",
       "projectType": "application",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "../resources/public",
-            "index": "src/index.html",
-            "main": "src/main.ts",
-            "tsConfig": "src/tsconfig.app.json",
-            "polyfills": "src/polyfills.ts",
+            "outputPath": "target/classes/static/app",
+            "index": "src/main/webapp/index.html",
+            "main": "src/main/webapp/main.ts",
+            "tsConfig": "tsconfig.json",
+            "polyfills": "src/main/webapp/polyfills.ts",
             "assets": [
-              "src/assets",
-              "src/favicon.ico",
-              "src/login.html"
+              "src/main/webapp/assets",
+              "src/main/webapp/favicon.ico"
             ],
             "styles": [
               "node_modules/perfect-scrollbar/css/perfect-scrollbar.css",
               "node_modules/sweetalert2/src/sweetalert2.scss",
-              "src/assets/scss/paper-dashboard.scss",
-              "src/assets/css/demo.css"
+              "src/main/webapp/assets/scss/paper-dashboard.scss",
+              "src/main/webapp/assets/css/demo.css"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -49,7 +48,7 @@
               "node_modules/@adactive/bootstrap-tagsinput/dist/bootstrap-tagsinput.js",
               "node_modules/jasny-bootstrap/dist/js/jasny-bootstrap.min.js",
               "node_modules/sweetalert2/dist/sweetalert2.js",
-              "src/assets/js/jquery.validate.min.js"
+              "src/main/webapp/assets/js/jquery.validate.min.js"
             ]
           },
           "configurations": {
@@ -65,11 +64,11 @@
               "buildOptimizer": true,
               "fileReplacements": [
                 {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
+                  "replace": "src/main/webapp/environments/environment.ts",
+                  "with": "src/main/webapp/environments/environment.prod.ts"
                 }, {
-                  "replace": "src/app/app.routing.ts",
-                  "with": "src/app/app.routing.prod.ts"
+                  "replace": "src/main/webapp/app/app.routing.ts",
+                  "with": "src/main/webapp/app/app.routing.prod.ts"
                 }
               ]
             }

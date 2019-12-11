@@ -12,7 +12,7 @@
  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
  */
-@import '~bootstrap/scss/bootstrap';
+@import '../../../../../node_modules/bootstrap/scss/bootstrap';
 @import 'paper-dashboard/variables';
 @import 'paper-dashboard/mixins';
 
@@ -97,6 +97,6 @@
 
 
 //datatable
-@import '../../../node_modules/@swimlane/ngx-datatable/release/index.css';
-@import '../../../node_modules/@swimlane/ngx-datatable/release/themes/material.css';
-@import '../../../node_modules/@swimlane/ngx-datatable/release/assets/icons.css';
+@import '../../../../../node_modules/@swimlane/ngx-datatable/release/index.css';
+@import '../../../../../node_modules/@swimlane/ngx-datatable/release/themes/material.css';
+@import '../../../../../node_modules/@swimlane/ngx-datatable/release/assets/icons.css';

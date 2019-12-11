@@ -20,6 +20,10 @@ export const AppRoutes: Routes = [
           {
             path: 'pages',
             loadChildren: './pages/pages.module#PagesModule'
+          },
+          {
+            path: '', // for default routing path
+            loadChildren: './pages/pages.module#PagesModule'
           }
         ]
       }

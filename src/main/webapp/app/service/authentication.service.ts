@@ -12,8 +12,8 @@ export class AuthenticationService {
 
   config = {
     'url': 'http://localhost:9080/auth',
-    'realm': 'jhipster',
-    'clientId': 'web_app'
+    'realm': 'railway',
+    'clientId': 'central'
   };
 
   constructor(private router: Router,

@@ -115,8 +115,6 @@
 			<artifactId>h2</artifactId>
 		</dependency>
 
-		<!-- Swagger ui -->
-
 		<!-- Swagger -->
 		<dependency>
 			<groupId>io.springfox</groupId>

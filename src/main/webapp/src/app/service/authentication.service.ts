@@ -1,15 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import {RestclientService} from "./restclient.service";
+import { RestclientService } from "./restclient.service";
 import {Observable} from "rxjs";
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { KeycloakService } from './keycloak.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
 
-  constructor(private router: Router, private http: HttpClient, private rest: RestclientService) {  }
+  config = {
+    'url': 'http://localhost:9080/auth',
+    'realm': 'jhipster',
+    'clientId': 'web_app'
+  };
+
+  constructor(private router: Router,
+              private http: HttpClient,
+              private rest: RestclientService,
+              private keycloakService: KeycloakService) {
+
+    this.keycloakService.init(this.config)
+    // this.keycloakService.login().subscribe(response => {
+    //   console.log(JSON.stringify(response))
+    // })
+   }
 
   isUserLoggedIn() {
     let user = sessionStorage.getItem('username')
@@ -24,14 +40,6 @@ export class AuthenticationService {
   }
 
   login(username: string, password: string): Observable<String> {
-    let params = new HttpParams();
-    params = params.append('username', username);
-    params = params.append('password', password);
-    return this.http.post(this.rest.API_URL + 'user/login',{},
-        {
-          withCredentials: true,
-          params: params,
-          responseType: 'text',
-        });
+    return new Observable
   }
 }

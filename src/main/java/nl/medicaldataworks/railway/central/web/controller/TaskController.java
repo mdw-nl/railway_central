@@ -10,10 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
@@ -41,7 +38,7 @@ public class TaskController {
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, Authentication authentication) {
         log.debug("Getting tasks");
-        Page<Task> page = taskRepository.findByOwnerName(pageable, authentication.getName());
+        Page<Task> page = taskRepository.findByClientId(pageable, authentication.getName());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

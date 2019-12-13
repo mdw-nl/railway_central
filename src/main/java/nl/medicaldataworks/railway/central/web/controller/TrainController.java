@@ -32,14 +32,14 @@ public class TrainController {
 
     @GetMapping("/trains/{id}")
     public ResponseEntity<Train> getTrain(@PathVariable Long id, Authentication authentication) {
-        log.debug("REST request to get trains : {}", id);
+        log.debug("REST request to get train : {}", id);
         Optional<Train> train = trainRepository.findByIdAndOwnerName(id, authentication.getName());
         return ResponseUtil.wrapOrNotFound(train);
     }
 
     @GetMapping("/trains")
     public ResponseEntity<List<Train>> getAllTrains(Pageable pageable, Authentication authentication) {
-        log.debug("Getting trains");
+        log.debug("REST request to get trains");
         Page<Train> page = trainRepository.findByOwnerName(pageable, authentication.getName());
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
@@ -47,7 +47,7 @@ public class TrainController {
 
     @PostMapping("/trains")
     public ResponseEntity<Train> createTrain(@RequestBody Train train, Authentication authentication) throws Exception {
-        log.debug("REST request to save Train : {}", train);
+        log.debug("REST request to save train : {}", train);
         if (train.getId() != null) {
             throw new Exception("A new train cannot already have an ID");
         }
@@ -84,6 +84,5 @@ public class TrainController {
         }else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
-
     }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndOwnerName(Long id, String ownerName);
 
-    Page<Task> findByOwnerName(Pageable pageable, String name);
-
     List<Task> findByTrainIdAndOwnerName(Long id, String name);
+
+    Page<Task> findByClientId(Pageable pageable, String name);
 }

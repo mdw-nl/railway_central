@@ -9,9 +9,10 @@ server:
 keycloak:
   auth-server-url: http://localhost:9080/auth
   realm: railway
+#  bearer-only: true
   resource: central
-  principal-attribute: preferred_username
-  public-client: true
+  allow-any-hostname: true
+  autodetect-bearer-only: true
 
 spring:
   main:

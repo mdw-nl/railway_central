@@ -2,10 +2,7 @@ package nl.medicaldataworks.railway.central.domain;
 
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Data
 @Entity
@@ -13,8 +10,10 @@ public class Task {
     @Id
     @GeneratedValue
     private Long id;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private Train train;
     private CalculationStatus calculationStatus;
     private String result;
+    private String clientId;
+    private String ownerName;
 }

@@ -37,6 +37,12 @@ class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
         return new RegisterSessionAuthenticationStrategy(new SessionRegistryImpl());
     }
 
+//    @Bean
+//    @Override
+//    protected SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+//        return new NullAuthenticatedSessionStrategy();
+//    }
+
     /**
      * Use properties in application.properties instead of keycloak.json
      */

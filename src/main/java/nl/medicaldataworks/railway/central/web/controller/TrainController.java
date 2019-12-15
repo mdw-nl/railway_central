@@ -3,8 +3,10 @@ package nl.medicaldataworks.railway.central.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.Train;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
+import nl.medicaldataworks.railway.central.util.KeycloakUtil;
 import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.util.ResponseUtil;
+import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -25,7 +27,7 @@ import java.util.Optional;
 @Transactional
 public class TrainController {
     private final TrainRepository trainRepository;
-
+    private KeycloakUtil keycloakUtil = new KeycloakUtil();
     public TrainController(TrainRepository trainRepository) {
         this.trainRepository = trainRepository;
     }
@@ -33,14 +35,14 @@ public class TrainController {
     @GetMapping("/trains/{id}")
     public ResponseEntity<Train> getTrain(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get train : {}", id);
-        Optional<Train> train = trainRepository.findByIdAndOwnerName(id, authentication.getName());
+        Optional<Train> train = trainRepository.findByIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
         return ResponseUtil.wrapOrNotFound(train);
     }
 
     @GetMapping("/trains")
     public ResponseEntity<List<Train>> getAllTrains(Pageable pageable, Authentication authentication) {
         log.debug("REST request to get trains");
-        Page<Train> page = trainRepository.findByOwnerName(pageable, authentication.getName());
+        Page<Train> page = trainRepository.findByOwnerName(pageable, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
@@ -51,7 +53,7 @@ public class TrainController {
         if (train.getId() != null) {
             throw new Exception("A new train cannot already have an ID");
         }
-        train.setOwnerName(authentication.getName());
+        train.setOwnerName(keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
         Train result = trainRepository.save(train);
         return ResponseEntity.created(new URI("/api/trains/" + result.getId()))
                 .body(result);
@@ -64,7 +66,7 @@ public class TrainController {
             throw new IllegalArgumentException("Invalid id");
         }
         Optional<Train> oldTrain = trainRepository.findByIdAndOwnerName(train.getId(), train.getOwnerName());
-        if(authentication.getName() != null && authentication.getName().equals(oldTrain.orElse(train).getOwnerName())){
+        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(oldTrain.orElse(train).getOwnerName())){
             Train result = trainRepository.save(train);
             return ResponseEntity.ok()
                     .body(result);
@@ -77,8 +79,8 @@ public class TrainController {
     public ResponseEntity<Void> deleteTrain(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to delete train : {}", id);
         Optional<Train> train = trainRepository.findById(id);
-        if(authentication.getName() != null && train.isPresent() &&
-                authentication.getName().equals(train.get().getOwnerName())){
+        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && train.isPresent() &&
+                keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(train.get().getOwnerName())){
             trainRepository.deleteById(id);
             return ResponseEntity.noContent().build();
         }else {

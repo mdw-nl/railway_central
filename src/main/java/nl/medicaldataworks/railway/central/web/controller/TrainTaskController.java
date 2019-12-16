@@ -50,8 +50,9 @@ public class TrainTaskController {
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
             task.setOwnerName(validTrain.getOwnerName());
-            validTrain.getTasks().add(task);
-            Train result = trainRepository.save(validTrain);
+            task.setTrain(validTrain);
+//            validTrain.getTasks().add(task);
+            Task result = taskRepository.save(task);
             return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

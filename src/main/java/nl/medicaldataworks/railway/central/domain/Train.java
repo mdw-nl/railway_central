@@ -15,6 +15,6 @@ public class Train {
     private String dockerImageUrl;
     private String ownerName;
     private CalculationStatus calculationStatus;
-    @OneToMany(mappedBy = "train", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "train") //cascade = CascadeType.ALL
     private List<Task> tasks;
 }

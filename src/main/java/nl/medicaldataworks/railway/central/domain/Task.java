@@ -14,7 +14,7 @@ public class Task {
     private Long id;
     @CreationTimestamp
     private Date creationTimestamp;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne() //cascade = CascadeType.PERSIST
     private Train train;
     private CalculationStatus calculationStatus;
     private String result;

@@ -42,7 +42,10 @@ public class TrainTaskController {
     @GetMapping("/trains/{id}/tasks")
     public ResponseEntity<List<Task>> getTasks(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get tasks : {}", id);
-        List<Task> tasks = taskRepository.findByTrainIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //TODO if not service account
+        //List<Task> tasks = taskRepository.findByTrainIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //else
+        List<Task> tasks = taskRepository.findByTrainId(id);
         return ResponseEntity.ok(tasks);
     }
 

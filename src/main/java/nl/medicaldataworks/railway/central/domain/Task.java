@@ -12,6 +12,8 @@ import java.util.Date;
 @Data
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Long.class)
+// jdbc:h2:file:./target/h2db/db/railway;DB_CLOSE_DELAY=-1
+// TODO removed the file because it gives errors on reload, need to fix
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

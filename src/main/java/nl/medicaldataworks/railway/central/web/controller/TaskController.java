@@ -32,12 +32,16 @@ public class TaskController {
     @GetMapping("/tasks/{id}")
     public ResponseEntity<Task> getTask(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get tasks : {}", id);
-        Optional<Task> task = taskRepository.findByIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //TODO if not service account
+        //Optional<Task> task = taskRepository.findByIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //else
+        Optional<Task> task = taskRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(task);
     }
 
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, @RequestParam(required = false) Long stationId) {
+        //TODO why is the stationId logic != null here?
         log.debug("Getting tasks");
         Page<Task> page;
         if(stationId != null){

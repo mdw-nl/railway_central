@@ -39,14 +39,20 @@ public class TrainController {
     @GetMapping("/trains/{id}")
     public ResponseEntity<Train> getTrain(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get train : {}", id);
-        Optional<Train> train = trainRepository.findByIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //TODO if not service account
+        //Optional<Train> train = trainRepository.findByIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //else
+        Optional<Train> train = trainRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(train);
     }
 
     @GetMapping("/trains")
     public ResponseEntity<List<Train>> getAllTrains(Pageable pageable, Authentication authentication) {
         log.debug("REST request to get trains");
-        Page<Train> page = trainRepository.findByOwnerName(pageable, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        // TODO if not service
+        //Page<Train> page = trainRepository.findByOwnerName(pageable, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        //else
+        Page<Train> page = trainRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

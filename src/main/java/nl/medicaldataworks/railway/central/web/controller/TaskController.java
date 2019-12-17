@@ -29,6 +29,8 @@ public class TaskController {
         this.taskRepository = taskRepository;
     }
 
+    //TODO how do we only give tasks that have not been completed back to the stations?
+
     @GetMapping("/tasks/{id}")
     public ResponseEntity<Task> getTask(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get tasks : {}", id);

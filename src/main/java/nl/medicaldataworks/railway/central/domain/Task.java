@@ -30,4 +30,5 @@ public class Task {
     @JsonIdentityReference(alwaysAsId = true)
     private Station station;
     private String ownerName;
+    //TODO Task should have a field for input values for the algorithm
 }

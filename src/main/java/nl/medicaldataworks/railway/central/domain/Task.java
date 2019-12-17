@@ -1,5 +1,7 @@
 package nl.medicaldataworks.railway.central.domain;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -14,7 +16,8 @@ public class Task {
     private Long id;
     @CreationTimestamp
     private Date creationTimestamp;
-    @ManyToOne() //cascade = CascadeType.PERSIST
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JsonBackReference
     private Train train;
     private CalculationStatus calculationStatus;
     private String result;

@@ -1,5 +1,6 @@
 package nl.medicaldataworks.railway.central.domain;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,6 +16,7 @@ public class Train {
     private String dockerImageUrl;
     private String ownerName;
     private CalculationStatus calculationStatus;
-    @OneToMany(mappedBy = "train") //cascade = CascadeType.ALL
+    @OneToMany(mappedBy = "train",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private List<Task> tasks;
 }

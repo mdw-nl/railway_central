@@ -34,7 +34,6 @@ public class TrainTaskController {
     @GetMapping("/trains/{id}/tasks")
     public ResponseEntity<List<Task>> getTasks(@PathVariable Long id, Authentication authentication) {
         log.debug("REST request to get tasks : {}", id);
-        //TODO Why is train null when taskRepository.findAll()?
         List<Task> tasks = taskRepository.findByTrainIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
         return ResponseEntity.ok(tasks);
     }
@@ -51,7 +50,6 @@ public class TrainTaskController {
         if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
             task.setOwnerName(validTrain.getOwnerName());
             task.setTrain(validTrain);
-//            validTrain.getTasks().add(task);
             Task result = taskRepository.save(task);
             return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
         } else {

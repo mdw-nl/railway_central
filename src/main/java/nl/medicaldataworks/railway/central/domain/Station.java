@@ -11,18 +11,13 @@ import java.util.List;
 @Data
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Long.class)
-public class Train {
+public class Station {
     @Id
     @GeneratedValue
     private Long id;
+    @Column(nullable = false)
     private String name;
-    @Column(nullable = false)
-    private String dockerImageUrl;
-    @Column(nullable = false)
-    private String ownerName;
-    @Column(nullable = false)
-    private CalculationStatus calculationStatus;
-    @OneToMany(mappedBy = "train",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "station",cascade = CascadeType.ALL)
     @JsonIdentityReference(alwaysAsId = true)
     private List<Task> tasks;
 }

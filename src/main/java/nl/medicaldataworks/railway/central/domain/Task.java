@@ -1,7 +1,8 @@
 package nl.medicaldataworks.railway.central.domain;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -10,6 +11,7 @@ import java.util.Date;
 
 @Data
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Long.class)
 public class Task {
     @Id
     @GeneratedValue
@@ -17,10 +19,13 @@ public class Task {
     @CreationTimestamp
     private Date creationTimestamp;
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JsonBackReference
+    @JsonIdentityReference(alwaysAsId = true)
     private Train train;
+    @Column(nullable = false)
     private CalculationStatus calculationStatus;
     private String result;
-    private String clientId;
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JsonIdentityReference(alwaysAsId = true)
+    private Station station;
     private String ownerName;
 }

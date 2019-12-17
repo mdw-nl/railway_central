@@ -1,12 +1,15 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import nl.medicaldataworks.railway.central.domain.Station;
 import nl.medicaldataworks.railway.central.domain.Task;
 import nl.medicaldataworks.railway.central.domain.Train;
+import nl.medicaldataworks.railway.central.repository.StationRepository;
 import nl.medicaldataworks.railway.central.repository.TaskRepository;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
 import nl.medicaldataworks.railway.central.util.KeycloakUtil;
-import org.apache.http.client.utils.URIBuilder;
+import nl.medicaldataworks.railway.central.web.dto.TaskDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -24,11 +27,16 @@ import java.util.Optional;
 public class TrainTaskController {
     private TaskRepository taskRepository;
     private TrainRepository trainRepository;
+    private StationRepository stationRepository;
+    private ModelMapper modelMapper;
     private KeycloakUtil keycloakUtil = new KeycloakUtil();;
 
-    public TrainTaskController(TaskRepository taskRepository, TrainRepository trainRepository) {
+    public TrainTaskController(TaskRepository taskRepository, TrainRepository trainRepository,
+                               StationRepository stationRepository, ModelMapper modelMapper) {
         this.taskRepository = taskRepository;
         this.trainRepository = trainRepository;
+        this.stationRepository = stationRepository;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/trains/{id}/tasks")
@@ -39,17 +47,21 @@ public class TrainTaskController {
     }
 
     @PostMapping("trains/{id}/tasks")
-    public ResponseEntity<Task> createTask(@PathVariable Long id, @RequestBody Task task,
+    public ResponseEntity<Task> createTask(@PathVariable Long id, @RequestBody TaskDto taskDto,
                                            Authentication authentication) throws Exception {
-        log.debug("REST request to save Task : {}", task);
-        if (task.getId() != null) {
+        log.debug("REST request to save Task : {}", taskDto);
+        if (taskDto.getId() != null) {
             throw new Exception("A new task cannot already have an ID");
         }
+        Task task = modelMapper.map(taskDto, Task.class);
         Optional<Train> train = trainRepository.findById(id);
+        Optional<Station> station = stationRepository.findById(taskDto.getStationId());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
+        Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
         if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
             task.setOwnerName(validTrain.getOwnerName());
             task.setTrain(validTrain);
+            task.setStation(validStation);
             Task result = taskRepository.save(task);
             return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
         } else {
@@ -58,33 +70,27 @@ public class TrainTaskController {
     }
 
     @PutMapping("trains/{id}/tasks")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task task, Authentication authentication)
+    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto, Authentication authentication)
             throws Exception {
-        log.debug("REST request to update task : {}", task);
-        if (task.getId() == null) {
+        log.debug("REST request to update task : {}", taskDto);
+        if (taskDto.getId() == null) {
             throw new IllegalArgumentException("Invalid id");
         }
         Optional<Train> train = trainRepository.findById(id);
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
-            Task result = taskRepository.save(task);
+            Optional<Task> task = taskRepository.findById(id);
+            Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
+            if(!validTask.getStation().getId().equals(taskDto.getStationId())){
+                throw new Exception("Cannot update station ID of task.");
+            }
+            validTask.setCalculationStatus(taskDto.getCalculationStatus());
+            validTask.setResult(taskDto.getResult());
+            Task result = taskRepository.save(validTask);
             return ResponseEntity.ok()
                     .body(result);
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
-
-//    @DeleteMapping("trains/{id}/tasks/{id}")
-//    public ResponseEntity<Void> deleteTask(@PathVariable Long id, Authentication authentication) {
-//        log.debug("REST request to delete task : {}", id);
-//        Optional<Task> task = taskRepository.findById(id);
-//        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && task.isPresent() &&
-//                keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(task.get().getOwnerName())){
-//            taskRepository.deleteById(id);
-//            return ResponseEntity.noContent().build();
-//        }else {
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        }
-//    }
 }

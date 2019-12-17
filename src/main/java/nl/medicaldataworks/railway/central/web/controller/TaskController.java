@@ -37,9 +37,14 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, Authentication authentication) {
+    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, @RequestParam(required = false) Long stationId) {
         log.debug("Getting tasks");
-        Page<Task> page = taskRepository.findByClientId(pageable, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
+        Page<Task> page;
+        if(stationId != null){
+            page = taskRepository.findByStationId(pageable, stationId);
+        } else {
+            page = taskRepository.findAll(pageable);
+        }
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

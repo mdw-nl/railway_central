@@ -6,7 +6,8 @@ import nl.medicaldataworks.railway.central.repository.TrainRepository;
 import nl.medicaldataworks.railway.central.util.KeycloakUtil;
 import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.util.ResponseUtil;
-import org.keycloak.adapters.springsecurity.account.SimpleKeycloakAccount;
+import nl.medicaldataworks.railway.central.web.dto.TrainDto;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -28,8 +29,11 @@ import java.util.Optional;
 public class TrainController {
     private final TrainRepository trainRepository;
     private KeycloakUtil keycloakUtil = new KeycloakUtil();
-    public TrainController(TrainRepository trainRepository) {
+    private ModelMapper modelMapper;
+
+    public TrainController(TrainRepository trainRepository, ModelMapper modelMapper) {
         this.trainRepository = trainRepository;
+        this.modelMapper = modelMapper;
     }
 
     @GetMapping("/trains/{id}")
@@ -48,11 +52,12 @@ public class TrainController {
     }
 
     @PostMapping("/trains")
-    public ResponseEntity<Train> createTrain(@RequestBody Train train, Authentication authentication) throws Exception {
-        log.debug("REST request to save train : {}", train);
-        if (train.getId() != null) {
+    public ResponseEntity<Train> createTrain(@RequestBody TrainDto trainDto, Authentication authentication) throws Exception {
+        log.debug("REST request to save train : {}", trainDto);
+        if (trainDto.getId() != null) {
             throw new Exception("A new train cannot already have an ID");
         }
+        Train train = modelMapper.map(trainDto, Train.class);
         train.setOwnerName(keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
         Train result = trainRepository.save(train);
         return ResponseEntity.created(new URI("/api/trains/" + result.getId()))
@@ -60,11 +65,12 @@ public class TrainController {
     }
 
     @PutMapping("/trains")
-    public ResponseEntity<Train> updateTrain(@RequestBody Train train, Authentication authentication) {
-        log.debug("REST request to update train : {}", train);
-        if (train.getId() == null) {
+    public ResponseEntity<Train> updateTrain(@RequestBody TrainDto trainDto, Authentication authentication) {
+        log.debug("REST request to update train : {}", trainDto);
+        if (trainDto.getId() == null) {
             throw new IllegalArgumentException("Invalid id");
         }
+        Train train = modelMapper.map(trainDto, Train.class);
         Optional<Train> oldTrain = trainRepository.findByIdAndOwnerName(train.getId(), train.getOwnerName());
         if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(oldTrain.orElse(train).getOwnerName())){
             Train result = trainRepository.save(train);

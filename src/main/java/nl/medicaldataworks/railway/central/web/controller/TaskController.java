@@ -24,7 +24,7 @@ import java.util.Optional;
 @Transactional
 public class TaskController {
     private TaskRepository taskRepository;
-    private KeycloakUtil keycloakUtil = new KeycloakUtil();;
+    private KeycloakUtil keycloakUtil = new KeycloakUtil();
     public TaskController(TaskRepository taskRepository) {
         this.taskRepository = taskRepository;
     }
@@ -42,12 +42,12 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, @RequestParam(required = false) Long stationId) {
+    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable, @RequestParam(required = false, name = "station-id") Long stationId) {
         //TODO why is the stationId logic != null here?
         log.debug("Getting tasks");
         Page<Task> page;
         if(stationId != null){
-            page = taskRepository.findByStationId(pageable, stationId);
+            page = taskRepository.findByStation(pageable, stationId);
         } else {
             page = taskRepository.findAll(pageable);
         }

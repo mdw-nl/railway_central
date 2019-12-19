@@ -58,18 +58,18 @@ public class TrainTaskController {
         }
         Task task = modelMapper.map(taskDto, Task.class);
         Optional<Train> train = trainRepository.findById(id);
-        Optional<Station> station = stationRepository.findById(taskDto.getStationId());
+        Optional<Station> station = stationRepository.findById(taskDto.getStation());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
-        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
-            task.setOwnerName(validTrain.getOwnerName());
-            task.setTrain(validTrain);
-            task.setStation(validStation);
-            Task result = taskRepository.save(task);
-            return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+//        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
+        task.setOwnerName(validTrain.getOwnerName());
+        task.setTrain(validTrain);
+        task.setStation(validStation);
+        Task result = taskRepository.save(task);
+        return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
+//        } else {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
     }
 
     @PutMapping("trains/{id}/tasks")
@@ -81,10 +81,10 @@ public class TrainTaskController {
         }
         Optional<Train> train = trainRepository.findById(id);
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
+//        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
             Optional<Task> task = taskRepository.findById(id);
             Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
-            if(!validTask.getStation().getId().equals(taskDto.getStationId())){
+            if(!validTask.getStation().getId().equals(taskDto.getStation())){
                 throw new Exception("Cannot update station ID of task.");
             }
             validTask.setCalculationStatus(taskDto.getCalculationStatus());
@@ -92,8 +92,8 @@ public class TrainTaskController {
             Task result = taskRepository.save(validTask);
             return ResponseEntity.ok()
                     .body(result);
-        } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+//        } else {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
     }
 }

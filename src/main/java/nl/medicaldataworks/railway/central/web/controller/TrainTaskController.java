@@ -7,9 +7,10 @@ import nl.medicaldataworks.railway.central.domain.Train;
 import nl.medicaldataworks.railway.central.repository.StationRepository;
 import nl.medicaldataworks.railway.central.repository.TaskRepository;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
-import nl.medicaldataworks.railway.central.util.KeycloakUtil;
 import nl.medicaldataworks.railway.central.web.dto.TaskDto;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -29,7 +29,6 @@ public class TrainTaskController {
     private TrainRepository trainRepository;
     private StationRepository stationRepository;
     private ModelMapper modelMapper;
-    private KeycloakUtil keycloakUtil = new KeycloakUtil();;
 
     public TrainTaskController(TaskRepository taskRepository, TrainRepository trainRepository,
                                StationRepository stationRepository, ModelMapper modelMapper) {
@@ -40,12 +39,9 @@ public class TrainTaskController {
     }
 
     @GetMapping("/trains/{id}/tasks")
-    public ResponseEntity<List<Task>> getTasks(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Page<Task>> getTasks(Pageable pageable, @PathVariable Long id) {
         log.debug("REST request to get tasks : {}", id);
-        //TODO if not service account
-        //List<Task> tasks = taskRepository.findByTrainIdAndOwnerName(id, keycloakUtil.getPreferredUsernameFromAuthentication(authentication));
-        //else
-        List<Task> tasks = taskRepository.findByTrainId(id);
+        Page<Task> tasks = taskRepository.findByTrainId(pageable, id);
         return ResponseEntity.ok(tasks);
     }
 
@@ -61,15 +57,13 @@ public class TrainTaskController {
         Optional<Station> station = stationRepository.findById(taskDto.getStationId());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
-        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
-            task.setOwnerName(validTrain.getOwnerName());
-            task.setTrain(validTrain);
-            task.setStation(validStation);
-            Task result = taskRepository.save(task);
-            return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
-        } else {
+        if(!validTrain.getOwnerId().equals(authentication.getName())){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        task.setTrainId(validTrain.getId());
+        task.setStationId(validStation.getId());
+        Task result = taskRepository.save(task);
+        return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
     }
 
     @PutMapping("trains/{id}/tasks")
@@ -81,19 +75,18 @@ public class TrainTaskController {
         }
         Optional<Train> train = trainRepository.findById(id);
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        if(keycloakUtil.getPreferredUsernameFromAuthentication(authentication) != null && keycloakUtil.getPreferredUsernameFromAuthentication(authentication).equals(validTrain.getOwnerName())) {
-            Optional<Task> task = taskRepository.findById(id);
-            Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
-            if(!validTask.getStation().getId().equals(taskDto.getStationId())){
-                throw new Exception("Cannot update station ID of task.");
-            }
-            validTask.setCalculationStatus(taskDto.getCalculationStatus());
-            validTask.setResult(taskDto.getResult());
-            Task result = taskRepository.save(validTask);
-            return ResponseEntity.ok()
-                    .body(result);
-        } else {
+        if(!validTrain.getOwnerId().equals(authentication.getName())){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
+        Optional<Task> task = taskRepository.findById(id);
+        Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
+        if(!validTask.getStationId().equals(taskDto.getStationId())){
+            throw new Exception("Cannot update station ID of task.");
+        }
+        validTask.setCalculationStatus(taskDto.getCalculationStatus());
+        validTask.setResult(taskDto.getResult());
+        Task result = taskRepository.save(validTask);
+        return ResponseEntity.ok()
+                .body(result);
     }
 }

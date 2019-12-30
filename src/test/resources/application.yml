@@ -1,0 +1,31 @@
+logging:
+  level:
+    ROOT: INFO
+    nl.medicaldataworks.railway.central: DEBUG
+
+server:
+  port: 8080
+
+keycloak:
+  enabled: false
+
+spring:
+  application:
+    name: railway
+  profiles:
+    active: dev
+    include:
+      - swagger
+  jmx:
+    enabled: false
+  datasource:
+    url: jdbc:h2:mem:railway
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    database-platform: org.hibernate.dialect.H2Dialect
+    database: H2
+  messages:
+    basename: i18n/messages

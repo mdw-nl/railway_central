@@ -5,8 +5,10 @@ import org.keycloak.adapters.KeycloakDeploymentBuilder;
 import org.keycloak.adapters.spi.HttpFacade;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
+@ConditionalOnProperty(value="keycloak.enabled", havingValue="true")
 @Configuration
 public class KeyCloakConfiguration extends KeycloakSpringBootConfigResolver {
     private final KeycloakDeployment keycloakDeployment;

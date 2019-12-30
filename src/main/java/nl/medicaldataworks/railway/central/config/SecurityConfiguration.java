@@ -6,6 +6,7 @@ import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -14,8 +15,9 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
+@ConditionalOnProperty(value="keycloak.enabled", havingValue="true")
 @KeycloakConfiguration
-class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
+public class SecurityConfiguration  extends KeycloakWebSecurityConfigurerAdapter {
 
     /**
      * Registers the KeycloakAuthenticationProvider with the authentication manager.
@@ -25,7 +27,7 @@ class SecurityConfiguration extends KeycloakWebSecurityConfigurerAdapter {
         KeycloakAuthenticationProvider keycloakAuthenticationProvider = keycloakAuthenticationProvider();
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
-
+//
     /**
      * Provide a session authentication strategy bean which should be of type
      * RegisterSessionAuthenticationStrategy for public or confidential applications

@@ -1,0 +1,1 @@
+We're using a repository pattern for JPA relations: https://stackoverflow.com/questions/51763093/spring-boot-how-to-persist-one-to-many-relation-separately-using-repository

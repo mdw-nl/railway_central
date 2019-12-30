@@ -9,11 +9,11 @@ server:
 keycloak:
   auth-server-url: http://localhost:9080/auth
   realm: railway
-#  bearer-only: true
   resource: central
   allow-any-hostname: true
   autodetect-bearer-only: true
   credentials.secret: "e5339213-1346-48b3-b25c-cbe16dc42ca6"
+  enabled: true
 
 spring:
   main:
@@ -26,15 +26,13 @@ spring:
       - swagger
   jmx:
     enabled: false
-  data:
-    jpa:
-      repositories:
-        bootstrap-mode: deferred
   datasource:
-    url: jdbc:h2:mem:railway
+    url: jdbc:h2:file:./target/h2db/db/railway
     username: sa
     password:
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
     database: H2
     properties:
@@ -43,7 +41,5 @@ spring:
       hibernate.cache.use_second_level_cache: false
       hibernate.cache.use_query_cache: false
       hibernate.generate_statistics: false
-  liquibase:
-    contexts: dev
   messages:
     basename: i18n/messages

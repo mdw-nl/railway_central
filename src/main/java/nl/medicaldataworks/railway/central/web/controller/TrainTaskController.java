@@ -17,7 +17,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
-import java.net.URI;
 import java.util.Optional;
 
 @Slf4j
@@ -63,7 +62,8 @@ public class TrainTaskController {
         task.setTrainId(validTrain.getId());
         task.setStationId(validStation.getId());
         Task result = taskRepository.save(task);
-        return ResponseEntity.created(new URI("/api/tasks/" + result.getId())).build();
+        return ResponseEntity.ok()
+                .body(result);
     }
 
     @PutMapping("trains/{id}/tasks")
@@ -75,9 +75,9 @@ public class TrainTaskController {
         }
         Optional<Train> train = trainRepository.findById(id);
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        if(!validTrain.getOwnerId().equals(authentication.getName())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+//        if(!validTrain.getOwnerId().equals(authentication.getName())){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        } TODO: Fix owner issues.
         Optional<Task> task = taskRepository.findById(id);
         Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){

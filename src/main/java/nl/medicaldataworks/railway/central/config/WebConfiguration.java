@@ -1,9 +1,13 @@
 package nl.medicaldataworks.railway.central.config;
 
+import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import org.springframework.boot.web.server.WebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
+import org.springframework.format.FormatterRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -13,7 +17,7 @@ import java.nio.file.Paths;
 import static java.net.URLDecoder.decode;
 
 @Configuration
-public class WebConfiguration implements WebServerFactoryCustomizer<WebServerFactory> {
+public class WebConfiguration implements WebServerFactoryCustomizer<WebServerFactory>, WebMvcConfigurer {
     @Override
     public void customize(WebServerFactory server) {
         setLocationForStaticAssets(server);
@@ -45,5 +49,17 @@ public class WebConfiguration implements WebServerFactoryCustomizer<WebServerFac
             return "";
         }
         return extractedPath.substring(0, extractionEndIndex);
+    }
+
+    @Override
+    public void addFormatters(FormatterRegistry registry) {
+        registry.addConverter(new StringToEnumConverter());
+    }
+
+    class StringToEnumConverter implements Converter<String, CalculationStatus> {
+        @Override
+        public CalculationStatus convert(String source) {
+            return CalculationStatus.valueOf(Integer.parseInt(source));
+        }
     }
 }

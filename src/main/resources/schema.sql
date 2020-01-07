@@ -3,6 +3,8 @@ create table if not exists task (
     calculation_status integer not null,
     creation_timestamp timestamp,
     result varchar(255),
+    master bit,
+    input varchar(255),
     station_id bigint,
     train_id bigint,
     primary key (id));

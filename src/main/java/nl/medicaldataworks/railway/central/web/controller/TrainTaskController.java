@@ -8,6 +8,7 @@ import nl.medicaldataworks.railway.central.repository.StationRepository;
 import nl.medicaldataworks.railway.central.repository.TaskRepository;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
 import nl.medicaldataworks.railway.central.web.dto.TaskDto;
+import org.keycloak.adapters.springsecurity.account.KeycloakRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -75,13 +76,23 @@ public class TrainTaskController {
         }
         Optional<Train> train = trainRepository.findById(id);
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-//        if(!validTrain.getOwnerId().equals(authentication.getName())){
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        } TODO: Fix owner issues.
+        boolean userIsOwner = validTrain.getOwnerId().equals(authentication.getName());
+
         Optional<Task> task = taskRepository.findById(id);
         Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){
             throw new Exception("Cannot update station ID of task.");
+        }
+
+        Optional<Station> station = stationRepository.findById(taskDto.getStationId());
+
+        boolean userIsPerformingStation = false;
+        if(station.isPresent() && authentication.getAuthorities().contains(new KeycloakRole(station.get().getName()))){
+            userIsPerformingStation = true;
+        }
+
+        if(!userIsOwner && !userIsPerformingStation){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
         validTask.setCalculationStatus(taskDto.getCalculationStatus());
         validTask.setResult(taskDto.getResult());

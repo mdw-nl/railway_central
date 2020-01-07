@@ -9,4 +9,8 @@ public class TaskDto {
     private CalculationStatus calculationStatus;
     private String result;
     private Long stationId;
+    private Long trainId;
+    private String input;
+    private boolean master;
 }
+

@@ -20,5 +20,6 @@ public class Task {
     private CalculationStatus calculationStatus;
     private String result;
     private Long stationId;
-    //TODO Task should have a field for input values for the algorithm
+    private String input;
+    private boolean master;
 }

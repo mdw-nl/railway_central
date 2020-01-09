@@ -11,7 +11,7 @@ import { KeycloakService } from './keycloak.service';
 export class AuthenticationService {
 
   config = {
-    'url': 'http://localhost:9080/auth',
+    'url': '/auth',
     'realm': 'railway',
     'clientId': 'central'
   };
@@ -22,9 +22,6 @@ export class AuthenticationService {
               private keycloakService: KeycloakService) {
 
     this.keycloakService.init(this.config)
-    // this.keycloakService.login().subscribe(response => {
-    //   console.log(JSON.stringify(response))
-    // })
    }
 
   isUserLoggedIn() {

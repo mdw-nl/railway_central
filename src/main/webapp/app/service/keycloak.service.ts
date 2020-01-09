@@ -16,19 +16,19 @@ export class KeycloakService {
       this.keycloakAuth = Keycloak(config);
       this.keycloakAuth.init({'onLoad': 'login-required'})
         .success(() => {
-          console.log('keycloack success')
+          console.log('keycloak success')
           console.log(this.getToken())
           resolve();
         })
         .error(() => {
-          console.log('keycloack error')
+          console.log('keycloak error')
           reject();
         });
     });
   }
 
   login() {
-    return this.http.post('http://localhost:9080/auth/realms/railway/protocol/openid-connect/token', {
+    return this.http.post('/auth/realms/railway/protocol/openid-connect/token', {
           headers: new HttpHeaders().append('Content-Type', 'application/x-www-form-urlencoded'),
           params: new HttpParams()
             .append('grant_type', 'password')

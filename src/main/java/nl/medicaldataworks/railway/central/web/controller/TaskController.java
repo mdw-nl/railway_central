@@ -38,8 +38,12 @@ public class TaskController {
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(Pageable pageable,
                                                   @RequestParam(value = "calculation-status", required = false) CalculationStatus calculationStatus,
-                                                  @RequestParam(value = "station-id", required = false) Long stationId) {
+                                                  @RequestParam(value = "station-name", required = false) String stationName) {
         log.debug("Getting tasks");
+        Long stationId = null;
+        if (stationName != null){
+            stationId = taskService.getStationIdForStationName(stationName);
+        }
         Page<Task> page = taskService.findTasks(pageable, calculationStatus, stationId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

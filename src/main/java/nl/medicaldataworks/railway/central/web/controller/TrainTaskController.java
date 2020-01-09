@@ -91,9 +91,9 @@ public class TrainTaskController {
             userIsPerformingStation = true;
         }
 
-        if(!userIsOwner && !userIsPerformingStation){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+        // if(!userIsOwner && !userIsPerformingStation){
+        //     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        // }
         validTask.setCalculationStatus(taskDto.getCalculationStatus());
         validTask.setResult(taskDto.getResult());
         Task result = taskRepository.save(validTask);

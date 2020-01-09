@@ -38,6 +38,13 @@ public class StationController {
         return ResponseUtil.wrapOrNotFound(station);
     }
 
+    @GetMapping("/stations/validate/{name}")
+    public ResponseEntity<Station> getStationIdForName(@PathVariable String name) {
+        log.debug("REST request to validation datation : {}", name);
+        Optional<Station> station = stationRepository.findByName(name);
+        return ResponseUtil.wrapOrNotFound(station);
+    }
+
     @GetMapping("/stations")
     public ResponseEntity<List<Station>> getAllStations(Pageable pageable) {
         log.debug("REST request to get stations");

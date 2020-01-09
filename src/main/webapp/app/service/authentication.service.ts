@@ -11,7 +11,7 @@ import {environment} from "../../environments/environment";
 })
 export class AuthenticationService {
   public KEYCLOAK_URL: String =
-      "http://" + environment.keycloakHost + ":" + environment.keycloakPort + "/";
+      "http://" + environment.keycloakHost + ":" + environment.keycloakPort;
   config = {
     'url': '',
     'realm': 'railway',

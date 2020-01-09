@@ -28,7 +28,7 @@ export class KeycloakService {
   }
 
   login() {
-    return this.http.post('/auth/realms/railway/protocol/openid-connect/token', {
+    return this.http.post(this.config.url + '/realms/railway/protocol/openid-connect/token', {
           headers: new HttpHeaders().append('Content-Type', 'application/x-www-form-urlencoded'),
           params: new HttpParams()
             .append('grant_type', 'password')

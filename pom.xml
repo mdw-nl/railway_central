@@ -175,14 +175,14 @@
 									<directory>src/main/resources/</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>config/*.yml</include>
+										<include>*.yml</include>
 									</includes>
 								</resource>
 								<resource>
 									<directory>src/main/resources/</directory>
 									<filtering>false</filtering>
 									<excludes>
-										<exclude>config/*.yml</exclude>
+										<exclude>*.yml</exclude>
 									</excludes>
 								</resource>
 							</resources>

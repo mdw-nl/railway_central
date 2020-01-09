@@ -4,14 +4,16 @@ import { RestclientService } from "./restclient.service";
 import {Observable} from "rxjs";
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { KeycloakService } from './keycloak.service';
+import {environment} from "../../environments/environment";
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
-
+  public KEYCLOAK_URL: String =
+      "http://" + environment.keycloakHost + ":" + environment.keycloakPort + "/";
   config = {
-    'url': '/auth',
+    'url': '',
     'realm': 'railway',
     'clientId': 'central'
   };
@@ -20,7 +22,7 @@ export class AuthenticationService {
               private http: HttpClient,
               private rest: RestclientService,
               private keycloakService: KeycloakService) {
-
+    this.config.url = this.KEYCLOAK_URL + '/auth';
     this.keycloakService.init(this.config)
    }
 

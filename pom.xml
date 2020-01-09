@@ -210,7 +210,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>install</arguments>
+							<arguments>install --env=prod</arguments>
 						</configuration>
 					</execution>
 					<execution>
@@ -219,7 +219,7 @@
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>run build</arguments>
+							<arguments>run build --env=prod</arguments>
 						</configuration>
 					</execution>
 				</executions>

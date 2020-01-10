@@ -3,6 +3,7 @@ package nl.medicaldataworks.railway.central.web.controller;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import nl.medicaldataworks.railway.central.domain.Task;
+import nl.medicaldataworks.railway.central.service.StationService;
 import nl.medicaldataworks.railway.central.service.TaskService;
 import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.util.ResponseUtil;
@@ -23,9 +24,11 @@ import java.util.Optional;
 @Transactional
 public class TaskController {
     private TaskService taskService;
+    private StationService stationService;
 
-    public TaskController(TaskService taskService) {
+    public TaskController(TaskService taskService, StationService stationService) {
         this.taskService = taskService;
+        this.stationService = stationService;
     }
 
     @GetMapping("/tasks/{id}")
@@ -41,9 +44,7 @@ public class TaskController {
                                                   @RequestParam(value = "station-name", required = false) String stationName) {
         log.debug("Getting tasks");
         Long stationId = null;
-        if (stationName != null){
-            stationId = taskService.getStationIdForStationName(stationName);
-        }
+        if (stationName != null) stationId = stationService.getStationIdForStationName(stationName);
         Page<Task> page = taskService.findTasks(pageable, calculationStatus, stationId);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());

@@ -238,9 +238,9 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.22.0</version>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
-					<excludedGroups>com.baeldung.maven.it.Integration</excludedGroups>
+					<excludedGroups>nl.medicaldataworks.railway.central.IntegrationTest</excludedGroups>
 				</configuration>
 			</plugin>
 		</plugins>

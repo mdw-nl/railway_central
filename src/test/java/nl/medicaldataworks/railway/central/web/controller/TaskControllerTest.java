@@ -1,7 +1,9 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
+import nl.medicaldataworks.railway.central.IntegrationTest;
 import nl.medicaldataworks.railway.central.domain.Task;
 import nl.medicaldataworks.railway.central.service.TaskService;
+import org.junit.experimental.categories.Category;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Category(IntegrationTest.class)
 public class TaskControllerTest {
 
     @Mock

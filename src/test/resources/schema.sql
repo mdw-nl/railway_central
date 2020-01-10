@@ -18,4 +18,5 @@ create table if not exists train (
     docker_image_url varchar(255) not null,
     name varchar(255),
     owner_id varchar(255) not null,
+    master_task bigint,
     primary key (id));

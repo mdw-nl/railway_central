@@ -22,7 +22,7 @@ public class TrainService {
 
     @Scheduled(fixedDelay = 1000)
     public void pollMasterTasks() {
-        Page<Task> idleMasterTasks = taskRepository.findByCalculationStatusAndMasterTrue(CalculationStatus.IDLE);
+        Page<Task> idleMasterTasks = taskRepository.findByCalculationStatusAndMasterTrue(null, CalculationStatus.IDLE);
         idleMasterTasks.stream().forEach(this::setToRequestIfTasksCompleted);
     }
 
@@ -32,7 +32,7 @@ public class TrainService {
         statuses.add(CalculationStatus.IDLE);
         statuses.add(CalculationStatus.REQUESTED);
         statuses.add(CalculationStatus.PROCESSING);
-        Page<Task> unCompletedTasks = taskRepository.findByTrainIdAndCalculationStatusIn(trainId, statuses);
+        Page<Task> unCompletedTasks = taskRepository.findByTrainIdAndCalculationStatusIn(null, trainId, statuses);
         if(unCompletedTasks.isEmpty()){
             task.setCalculationStatus(CalculationStatus.REQUESTED);
         }

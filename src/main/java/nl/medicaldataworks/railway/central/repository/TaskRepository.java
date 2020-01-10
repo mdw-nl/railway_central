@@ -15,7 +15,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> findByTrainId(Pageable pageable, Long id);
     Page<Task> findByStationIdAndCalculationStatus(Pageable pageable, Long stationId, CalculationStatus calculationStatus);
     Page<Task> findByCalculationStatus(Pageable pageable, CalculationStatus calculationStatus);
-    Page<Task> findByTrainIdAndCalculationStatusIn(Long id, List<CalculationStatus> statuses);
-    Page<Task> findByCalculationStatusAndMasterTrue(CalculationStatus calculationStatus);
-    Page<Task> findByTrainIdAndCalculationStatusNotIn(Long trainId, List<CalculationStatus> statuses);
+    Page<Task> findByTrainIdAndCalculationStatusIn(Pageable pageable, Long id, List<CalculationStatus> statuses);
+    Page<Task> findByCalculationStatusAndMasterTrue(Pageable pageable, CalculationStatus calculationStatus);
+    Page<Task> findByTrainIdAndCalculationStatusNotIn(Pageable pageable, Long trainId, List<CalculationStatus> statuses);
 }

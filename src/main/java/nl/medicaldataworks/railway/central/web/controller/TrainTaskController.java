@@ -78,7 +78,7 @@ public class TrainTaskController {
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         boolean userIsOwner = validTrain.getOwnerId().equals(authentication.getName());
 
-        Optional<Task> task = taskRepository.findById(id);
+        Optional<Task> task = taskRepository.findById(taskDto.getId());
         Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){
             throw new Exception("Cannot update station ID of task.");

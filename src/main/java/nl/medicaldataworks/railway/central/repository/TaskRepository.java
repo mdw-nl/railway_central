@@ -7,10 +7,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
     Page<Task> findByStationId(Pageable pageable, Long id);
     Page<Task> findByTrainId(Pageable pageable, Long id);
     Page<Task> findByStationIdAndCalculationStatus(Pageable pageable, Long stationId, CalculationStatus calculationStatus);
     Page<Task> findByCalculationStatus(Pageable pageable, CalculationStatus calculationStatus);
+    Page<Task> findByTrainIdAndCalculationStatusIn(Long id, List<CalculationStatus> statuses);
+    Page<Task> findByCalculationStatusAndMasterTrue(CalculationStatus calculationStatus);
+    Page<Task> findByTrainIdAndCalculationStatusNotIn(Long trainId, List<CalculationStatus> statuses);
 }

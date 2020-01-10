@@ -57,9 +57,9 @@ public class TrainTaskController {
         Optional<Station> station = stationRepository.findById(taskDto.getStationId());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
-        if(!validTrain.getOwnerId().equals(authentication.getName())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+//        if(!validTrain.getOwnerId().equals(authentication.getName())){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        } // TODO idea is good, but problematic when creating tasks from master algorithm, fix later
         task.setTrainId(validTrain.getId());
         task.setStationId(validStation.getId());
         Task result = taskRepository.save(task);
@@ -78,7 +78,7 @@ public class TrainTaskController {
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         boolean userIsOwner = validTrain.getOwnerId().equals(authentication.getName());
 
-        Optional<Task> task = taskRepository.findById(id);
+        Optional<Task> task = taskRepository.findById(taskDto.getId());
         Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){
             throw new Exception("Cannot update station ID of task.");

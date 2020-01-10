@@ -66,9 +66,6 @@
                 {
                   "replace": "src/main/webapp/environments/environment.ts",
                   "with": "src/main/webapp/environments/environment.prod.ts"
-                }, {
-                  "replace": "src/main/webapp/app/app.routing.ts",
-                  "with": "src/main/webapp/app/app.routing.prod.ts"
                 }
               ]
             }

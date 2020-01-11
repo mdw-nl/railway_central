@@ -1,18 +1,20 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
 import lombok.extern.slf4j.Slf4j;
+import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import nl.medicaldataworks.railway.central.domain.Station;
 import nl.medicaldataworks.railway.central.domain.Task;
 import nl.medicaldataworks.railway.central.domain.Train;
 import nl.medicaldataworks.railway.central.repository.StationRepository;
 import nl.medicaldataworks.railway.central.repository.TaskRepository;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
+import nl.medicaldataworks.railway.central.service.StationService;
+import nl.medicaldataworks.railway.central.service.TaskService;
 import nl.medicaldataworks.railway.central.web.dto.TaskDto;
 import org.keycloak.adapters.springsecurity.account.KeycloakRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -27,21 +29,30 @@ import java.util.Optional;
 public class TrainTaskController {
     private TaskRepository taskRepository;
     private TrainRepository trainRepository;
+    private StationService stationService;
     private StationRepository stationRepository;
     private ModelMapper modelMapper;
+    private TaskService taskService;
 
     public TrainTaskController(TaskRepository taskRepository, TrainRepository trainRepository,
-                               StationRepository stationRepository, ModelMapper modelMapper) {
+                               StationService stationService, StationRepository stationRepository,
+                               ModelMapper modelMapper, TaskService taskService) {
         this.taskRepository = taskRepository;
         this.trainRepository = trainRepository;
+        this.stationService = stationService;
         this.stationRepository = stationRepository;
         this.modelMapper = modelMapper;
+        this.taskService = taskService;
     }
 
     @GetMapping("/trains/{id}/tasks")
-    public ResponseEntity<Page<Task>> getTasks(Pageable pageable, @PathVariable Long id) {
+    public ResponseEntity<Page<Task>> getTasks(Pageable pageable, @PathVariable Long id,
+                                               @RequestParam(value = "calculation-status") Optional<String> calculationStatus,
+                                               @RequestParam(value = "station-name") Optional<String> stationName) {
         log.debug("REST request to get tasks : {}", id);
-        Page<Task> tasks = taskRepository.findByTrainId(pageable, id);
+        Optional<CalculationStatus> calculationStatusOptional = calculationStatus.map(CalculationStatus::valueOf);
+        Optional<Long> stationId = stationService.getStationIdForStationName(stationName);
+        Page<Task> tasks = taskService.findTasks(pageable, calculationStatusOptional, stationId);
         return ResponseEntity.ok(tasks);
     }
 

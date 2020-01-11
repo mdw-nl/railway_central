@@ -34,6 +34,8 @@ public class TrainService {
         statuses.add(CalculationStatus.PROCESSING);
         Page<Task> unCompletedTasks = taskRepository.findByTrainIdAndCalculationStatusIn(null, trainId, statuses);
         if(unCompletedTasks.isEmpty()){
+            Page<Task> completedTasks = taskRepository.findByTrainIdAndCalculationStatus(null, trainId, CalculationStatus.COMPLETED);
+            completedTasks.stream().forEach(completedTask -> {completedTask.setCalculationStatus(CalculationStatus.ARCHIVED);});
             task.setCalculationStatus(CalculationStatus.REQUESTED);
         }
     }

@@ -16,12 +16,10 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public Long getStationIdForStationName(String stationName){
-        Optional<Station> station =stationRepository.findByName(stationName);
-        if (station.isPresent()){
-            return station.get().getId();
-        } else {
-            return null;
+    public Optional<Long> getStationIdForStationName(Optional<String> stationName){
+        if(!stationName.isPresent()){
+            return Optional.empty();
         }
+        return stationRepository.findByName(stationName.get()).map(Station::getId);
     }
 }

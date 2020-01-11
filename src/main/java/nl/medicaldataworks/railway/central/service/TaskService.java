@@ -23,17 +23,9 @@ public class TaskService {
         return taskRepository.findById(id);
     }
 
-    public Page<Task> findTasks(Pageable pageable, CalculationStatus calculationStatus, Long stationId){
-        Page<Task> page;
-        if(stationId != null && calculationStatus != null){
-            page = taskRepository.findByStationIdAndCalculationStatus(pageable, stationId, calculationStatus);
-        } else if(stationId != null){
-            page = taskRepository.findByStationId(pageable, stationId);
-        } else if(calculationStatus != null) {
-            page = taskRepository.findByCalculationStatus(pageable, calculationStatus);
-        } else {
-            page = taskRepository.findAll(pageable);
-        }
-        return page;
+    public Page<Task> findTasks(Pageable pageable,
+                                Optional<CalculationStatus> calculationStatus,
+                                Optional<Long> stationId){
+        return taskRepository.findByOptionalCalculationStatusAndOptionalStationId(pageable, calculationStatus, stationId);
     }
 }

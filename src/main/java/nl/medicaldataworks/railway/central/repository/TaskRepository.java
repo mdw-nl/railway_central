@@ -5,17 +5,19 @@ import nl.medicaldataworks.railway.central.domain.Task;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
-    Page<Task> findByStationId(Pageable pageable, Long id);
-    Page<Task> findByTrainId(Pageable pageable, Long id);
-    Page<Task> findByStationIdAndCalculationStatus(Pageable pageable, Long stationId, CalculationStatus calculationStatus);
-    Page<Task> findByCalculationStatus(Pageable pageable, CalculationStatus calculationStatus);
     Page<Task> findByTrainIdAndCalculationStatusIn(Pageable pageable, Long id, List<CalculationStatus> statuses);
     Page<Task> findByCalculationStatusAndMasterTrue(Pageable pageable, CalculationStatus calculationStatus);
-    Page<Task> findByTrainIdAndCalculationStatusNotIn(Pageable pageable, Long trainId, List<CalculationStatus> statuses);
+    Page<Task> findByTrainIdAndCalculationStatus(Pageable pageable, Long trainId, CalculationStatus completed);
+
+    @Query("select data from Task data where (:calculationStatus is null or data.calculationStatus = :calculationStatus) and "
+            + "(:stationId is null or data.stationId = :stationId)")
+    Page<Task> findByOptionalCalculationStatusAndOptionalStationId(Pageable pageable, Optional<CalculationStatus> calculationStatus, Optional<Long> stationId);
 }

@@ -10,16 +10,20 @@ import nl.medicaldataworks.railway.central.repository.TaskRepository;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
 import nl.medicaldataworks.railway.central.service.StationService;
 import nl.medicaldataworks.railway.central.service.TaskService;
+import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.web.dto.TaskDto;
 import org.keycloak.adapters.springsecurity.account.KeycloakRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
 
 @Slf4j
@@ -46,14 +50,15 @@ public class TrainTaskController {
     }
 
     @GetMapping("/trains/{id}/tasks")
-    public ResponseEntity<Page<Task>> getTasks(Pageable pageable, @PathVariable Long id,
+    public ResponseEntity<List<Task>> getTasks(Pageable pageable, @PathVariable Long id,
                                                @RequestParam(value = "calculation-status") Optional<String> calculationStatus,
                                                @RequestParam(value = "station-name") Optional<String> stationName) {
         log.debug("REST request to get tasks : {}", id);
         Optional<CalculationStatus> calculationStatusOptional = calculationStatus.map(CalculationStatus::valueOf);
         Optional<Long> stationId = stationService.getStationIdForStationName(stationName);
         Page<Task> tasks = taskService.findTasks(pageable, calculationStatusOptional, stationId);
-        return ResponseEntity.ok(tasks);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), tasks);
+        return ResponseEntity.ok().headers(headers).body(tasks.getContent());
     }
 
     @PostMapping("trains/{id}/tasks")

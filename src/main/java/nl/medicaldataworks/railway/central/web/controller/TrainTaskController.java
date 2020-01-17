@@ -52,11 +52,12 @@ public class TrainTaskController {
     @GetMapping("/trains/{id}/tasks")
     public ResponseEntity<List<Task>> getTasks(Pageable pageable, @PathVariable Long id,
                                                @RequestParam(value = "calculation-status") Optional<String> calculationStatus,
-                                               @RequestParam(value = "station-name") Optional<String> stationName) {
+                                               @RequestParam(value = "station-name") Optional<String> stationName,
+                                               @RequestParam(value = "iteration") Optional<Long> iteration) {
         log.debug("REST request to get tasks : {}", id);
         Optional<CalculationStatus> calculationStatusOptional = calculationStatus.map(CalculationStatus::valueOf);
         Optional<Long> stationId = stationService.getStationIdForStationName(stationName);
-        Page<Task> tasks = taskService.findTasks(pageable, calculationStatusOptional, stationId);
+        Page<Task> tasks = taskService.findTasks(pageable, id, calculationStatusOptional, stationId, iteration);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), tasks);
         return ResponseEntity.ok().headers(headers).body(tasks.getContent());
     }

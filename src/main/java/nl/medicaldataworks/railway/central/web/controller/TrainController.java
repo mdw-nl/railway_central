@@ -70,9 +70,9 @@ public class TrainController {
         }
         Optional<Train> train = trainRepository.findById(trainDto.getId());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        if(!validTrain.getOwnerId().equals(authentication.getName())){
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
+//        if(!validTrain.getOwnerId().equals(authentication.getName())){
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+//        }
         validTrain.setDockerImageUrl(trainDto.getDockerImageUrl());
         validTrain.setCalculationStatus(trainDto.getCalculationStatus());
         validTrain.setName(trainDto.getName());

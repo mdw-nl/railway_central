@@ -1,5 +1,8 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.Station;
 import nl.medicaldataworks.railway.central.repository.StationRepository;
@@ -23,6 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @Transactional
+@Api(tags = { "station-controller" })
 public class StationController {
     private final StationRepository stationRepository;
     private ModelMapper modelMapper;
@@ -31,21 +35,25 @@ public class StationController {
         this.modelMapper = modelMapper;
     }
 
+
+    @ApiOperation(value = "Find a station by ID.")
     @GetMapping("/stations/{id}")
-    public ResponseEntity<Station> getStation(@PathVariable Long id) {
+    public ResponseEntity<Station> getStation(@ApiParam(value = "ID of the station to return.", required = true)  @PathVariable Long id) {
         log.debug("REST request to get station : {}", id);
         Optional<Station> station = stationRepository.findById(id);
         return ResponseUtil.wrapOrNotFound(station);
     }
 
+    @ApiOperation(value = "Validate the existence of a station by station name.")
     @GetMapping("/stations/validate/{name}")
-    public ResponseEntity<Station> getStationIdForName(@PathVariable String name) {
+    public ResponseEntity<Station> getStationIdForName(@ApiParam(value = "Name of the station to validate.", required = true) @PathVariable String name) {
         log.debug("REST request to validation datation : {}", name);
         Optional<Station> station = stationRepository.findByName(name);
         return ResponseUtil.wrapOrNotFound(station);
     }
 
     @GetMapping("/stations")
+    @ApiOperation(value = "Validate the existence of a station by station name.")
     public ResponseEntity<List<Station>> getAllStations(Pageable pageable) {
         log.debug("REST request to get stations");
         Page<Station> page = stationRepository.findAll(pageable);
@@ -54,7 +62,8 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<Station> createStation(@RequestBody StationDto stationDto) throws Exception {
+    @ApiOperation(value = "Add a new station. Needed before starting a station locally the first time.")
+    public ResponseEntity<Station> createStation(@ApiParam(value = "Station object to add.", required = true) @RequestBody StationDto stationDto) throws Exception {
         log.debug("REST request to save station : {}", stationDto);
         if (stationDto.getId() != null) {
             throw new Exception("A new station cannot already have an ID");
@@ -66,6 +75,7 @@ public class StationController {
     }
 
     @PutMapping("/stations")
+    @ApiOperation(value = "Update an existing station.")
     public ResponseEntity<Station> updateStation(@RequestBody Station station) {
         log.debug("REST request to update station : {}", station);
         if (station.getId() == null) {
@@ -77,7 +87,8 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    @ApiOperation(value = "Delete a station by ID.")
+    public ResponseEntity<Void> deleteStation(@ApiParam(value = "ID of the station to delete.") @PathVariable Long id) {
         log.debug("REST request to delete station : {}", id);
         Optional<Station> station = stationRepository.findById(id);
         stationRepository.deleteById(id);

@@ -1,5 +1,6 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import nl.medicaldataworks.railway.central.domain.Station;
@@ -30,6 +31,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @Transactional
+@Api(tags = { "train-task-controller" })
 public class TrainTaskController {
     private TaskRepository taskRepository;
     private TrainRepository trainRepository;

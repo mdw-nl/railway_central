@@ -1,5 +1,6 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
+import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.Train;
 import nl.medicaldataworks.railway.central.repository.TrainRepository;
@@ -25,6 +26,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/api")
 @Transactional
+@Api(tags = { "train-controller" })
 public class TrainController {
     private final TrainRepository trainRepository;
     private ModelMapper modelMapper;

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.Station;
 import nl.medicaldataworks.railway.central.repository.StationRepository;
+import nl.medicaldataworks.railway.central.service.StationService;
 import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.util.ResponseUtil;
 import nl.medicaldataworks.railway.central.web.dto.StationDto;
@@ -20,6 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 import java.net.URI;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +32,12 @@ import java.util.Optional;
 @Api(tags = { "station-controller" })
 public class StationController {
     private final StationRepository stationRepository;
+    private final StationService stationService;
     private ModelMapper modelMapper;
-    public StationController(StationRepository stationRepository, ModelMapper modelMapper) {
+
+    public StationController(StationRepository stationRepository, StationService stationService, ModelMapper modelMapper) {
         this.stationRepository = stationRepository;
+        this.stationService = stationService;
         this.modelMapper = modelMapper;
     }
 
@@ -45,21 +50,24 @@ public class StationController {
         return ResponseUtil.wrapOrNotFound(station);
     }
 
-    @ApiOperation(value = "Validate the existence of a station by station name.")
-    @GetMapping("/stations/validate/{name}")
-    public ResponseEntity<Station> getStationIdForName(@ApiParam(value = "Name of the station to validate.", required = true) @PathVariable String name) {
-        log.debug("REST request to validation datation : {}", name);
-        Optional<Station> station = stationRepository.findByName(name);
-        return ResponseUtil.wrapOrNotFound(station);
-    }
-
     @GetMapping("/stations")
-    @ApiOperation(value = "Returns all stations currently registered.")
-    public ResponseEntity<List<Station>> getAllStations(@ApiIgnore("Ignored because swagger ui shows the wrong params.") Pageable pageable) {
+    @ApiOperation(value = "Search stations based on query parameters.")
+    public ResponseEntity<List<Station>> getAllStations(@ApiIgnore("Ignored because swagger ui shows the wrong params.") Pageable pageable,
+                                                        @ApiParam(value = "Filter tasks on station name.")
+                                                        @RequestParam(value = "station-name") Optional<String> stationName) {
         log.debug("REST request to get stations");
-        Page<Station> page = stationRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
-        return ResponseEntity.ok().headers(headers).body(page.getContent());
+        if(stationName.isPresent()){
+            Optional<Long> stationId = stationService.getStationIdForStationName(stationName);
+            if(!stationId.isPresent()){
+                return ResponseEntity.ok(Collections.emptyList());
+            }
+            Optional<Station> station = stationRepository.findById(stationId.get());
+            return ResponseEntity.ok(Collections.singletonList(station.get()));
+        } else {
+            Page<Station> page = stationRepository.findAll(pageable);
+            HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+            return ResponseEntity.ok().headers(headers).body(page.getContent());
+        }
     }
 
     @PostMapping("/stations")
@@ -67,7 +75,7 @@ public class StationController {
     public ResponseEntity<Station> createStation(@ApiParam(value = "Station object to add.", required = true) @RequestBody StationDto stationDto) throws Exception {
         log.debug("REST request to save station : {}", stationDto);
         if (stationDto.getId() != null) {
-            throw new Exception("A new station cannot already have an ID");
+            throw new IllegalArgumentException("A new station cannot already have an ID");
         }
         Station station = modelMapper.map(stationDto, Station.class);
         Station result = stationRepository.save(station);
@@ -80,7 +88,7 @@ public class StationController {
     public ResponseEntity<Station> updateStation(@ApiParam(value = "New station object to replace the existing one. Should have the same ID as the old station.", required = true) @RequestBody Station station) {
         log.debug("REST request to update station : {}", station);
         if (station.getId() == null) {
-            throw new IllegalArgumentException("Invalid id");
+            throw new IllegalArgumentException("Invalid ID");
         }
         Station result = stationRepository.save(station);
         return ResponseEntity.ok()

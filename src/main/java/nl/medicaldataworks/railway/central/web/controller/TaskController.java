@@ -1,6 +1,8 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import nl.medicaldataworks.railway.central.domain.Task;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -34,6 +37,7 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
+    @ApiOperation(value = "Get a task by ID.")
     public ResponseEntity<Task> getTask(@PathVariable Long id) {
         log.debug("REST request to get tasks : {}", id);
         Optional<Task> task = taskService.findTask(id);
@@ -41,8 +45,11 @@ public class TaskController {
     }
 
     @GetMapping("/tasks")
-    public ResponseEntity<List<Task>> getAllTasks(Pageable pageable,
+    @ApiOperation(value = "Search tasks based on query parameters.")
+    public ResponseEntity<List<Task>> getAllTasks(@ApiIgnore("Ignored because swagger ui shows the wrong params.") Pageable pageable,
+                                                  @ApiParam(value = "Filter tasks on calculation status. Can be either REQUESTED, IDLE, PROCESSING, COMPLETED or ARCHIVED.")
                                                   @RequestParam(value = "calculation-status") Optional<String> calculationStatus,
+                                                  @ApiParam(value = "Filter tasks on station name.")
                                                   @RequestParam(value = "station-name") Optional<String> stationName) {
         log.debug("Getting tasks");
         Optional<CalculationStatus> calculationStatusOptional = calculationStatus.map(CalculationStatus::valueOf);

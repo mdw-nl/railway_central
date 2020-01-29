@@ -16,6 +16,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 import java.net.URI;
@@ -53,8 +54,8 @@ public class StationController {
     }
 
     @GetMapping("/stations")
-    @ApiOperation(value = "Validate the existence of a station by station name.")
-    public ResponseEntity<List<Station>> getAllStations(Pageable pageable) {
+    @ApiOperation(value = "Returns all stations currently registered.")
+    public ResponseEntity<List<Station>> getAllStations(@ApiIgnore("Ignored because swagger ui shows the wrong params.") Pageable pageable) {
         log.debug("REST request to get stations");
         Page<Station> page = stationRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
@@ -76,7 +77,7 @@ public class StationController {
 
     @PutMapping("/stations")
     @ApiOperation(value = "Update an existing station.")
-    public ResponseEntity<Station> updateStation(@RequestBody Station station) {
+    public ResponseEntity<Station> updateStation(@ApiParam(value = "New station object to replace the existing one. Should have the same ID as the old station.", required = true) @RequestBody Station station) {
         log.debug("REST request to update station : {}", station);
         if (station.getId() == null) {
             throw new IllegalArgumentException("Invalid id");

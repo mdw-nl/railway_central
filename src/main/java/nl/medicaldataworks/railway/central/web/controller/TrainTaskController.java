@@ -1,6 +1,8 @@
 package nl.medicaldataworks.railway.central.web.controller;
 
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import nl.medicaldataworks.railway.central.domain.CalculationStatus;
 import nl.medicaldataworks.railway.central.domain.Station;
@@ -13,7 +15,6 @@ import nl.medicaldataworks.railway.central.service.StationService;
 import nl.medicaldataworks.railway.central.service.TaskService;
 import nl.medicaldataworks.railway.central.util.PaginationUtil;
 import nl.medicaldataworks.railway.central.web.dto.TaskDto;
-import org.keycloak.adapters.springsecurity.account.KeycloakRole;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -52,9 +54,13 @@ public class TrainTaskController {
     }
 
     @GetMapping("/trains/{id}/tasks")
-    public ResponseEntity<List<Task>> getTasks(Pageable pageable, @PathVariable Long id,
+    @ApiOperation(value="Search tasks based on query parameters for the train with the supplied ID.")
+    public ResponseEntity<List<Task>> getTasks(@ApiIgnore("Ignored because swagger ui shows the wrong params.") Pageable pageable, @PathVariable Long id,
+                                               @ApiParam(value = "Filter tasks on calculation status. Can be either REQUESTED, IDLE, PROCESSING, COMPLETED or ARCHIVED.")
                                                @RequestParam(value = "calculation-status") Optional<String> calculationStatus,
+                                               @ApiParam(value = "Filter tasks on station name.")
                                                @RequestParam(value = "station-name") Optional<String> stationName,
+                                               @ApiParam(value = "Filter tasks on the iteration for which they were created.")
                                                @RequestParam(value = "iteration") Optional<Long> iteration) {
         log.debug("REST request to get tasks : {}", id);
         Optional<CalculationStatus> calculationStatusOptional = calculationStatus.map(CalculationStatus::valueOf);
@@ -76,9 +82,6 @@ public class TrainTaskController {
         Optional<Station> station = stationRepository.findById(taskDto.getStationId());
         Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
         Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
-//        if(!validTrain.getOwnerId().equals(authentication.getName())){
-//            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-//        } // TODO idea is good, but problematic when creating tasks from master algorithm, fix later
         task.setTrainId(validTrain.getId());
         task.setStationId(validStation.getId());
         Task result = taskRepository.save(task);
@@ -94,25 +97,13 @@ public class TrainTaskController {
             throw new IllegalArgumentException("Invalid id");
         }
         Optional<Train> train = trainRepository.findById(id);
-        Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        boolean userIsOwner = validTrain.getOwnerId().equals(authentication.getName());
+        train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
 
         Optional<Task> task = taskRepository.findById(taskDto.getId());
         Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){
             throw new Exception("Cannot update station ID of task.");
         }
-
-        Optional<Station> station = stationRepository.findById(taskDto.getStationId());
-
-        boolean userIsPerformingStation = false;
-        if(station.isPresent() && authentication.getAuthorities().contains(new KeycloakRole(station.get().getName()))){
-            userIsPerformingStation = true;
-        }
-
-        // if(!userIsOwner && !userIsPerformingStation){
-        //     return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        // }
         validTask.setCalculationStatus(taskDto.getCalculationStatus());
         validTask.setResult(taskDto.getResult());
         Task result = taskRepository.save(validTask);

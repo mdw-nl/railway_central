@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
-  host: 'railway.medicaldataworks.nl',
+  host: 'localhost',
   port: 8080,
-  keycloakHost: 'railway.medicaldataworks.nl',
+  keycloakHost: 'localhost',
   keycloakPort: 9080
 };

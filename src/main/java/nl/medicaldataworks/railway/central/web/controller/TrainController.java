@@ -22,6 +22,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import javax.transaction.Transactional;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
 
@@ -60,10 +61,10 @@ public class TrainController {
     @ApiOperation(value="Add a new train.")
     @PostMapping("/trains")
     public ResponseEntity<Train> createTrain(@ApiParam(value = "Train object to add.")
-                                             @RequestBody TrainDto trainDto, Authentication authentication) throws Exception {
+                                             @RequestBody TrainDto trainDto, Authentication authentication) throws IllegalArgumentException, URISyntaxException {
         log.debug("REST request to save train : {}", trainDto);
         if (trainDto.getId() != null) {
-            throw new Exception("A new train cannot already have an ID");
+            throw new IllegalArgumentException("A new train cannot already have an ID");
         }
         Train train = modelMapper.map(trainDto, Train.class);
         train.setOwnerId(authentication.getName());
@@ -75,13 +76,13 @@ public class TrainController {
     @ApiOperation(value="Update an existing train.")
     @PutMapping("/trains")
     public ResponseEntity<Train> updateTrain(@ApiParam(value = "New train object to replace the existing one. Should have the same ID as the old station.", required = true)
-                                             @RequestBody TrainDto trainDto, Authentication authentication) throws Exception {
+                                             @RequestBody TrainDto trainDto, Authentication authentication) throws IllegalArgumentException {
         log.debug("REST request to update train : {}", trainDto);
         if (trainDto.getId() == null) {
             throw new IllegalArgumentException("Invalid id");
         }
         Optional<Train> train = trainRepository.findById(trainDto.getId());
-        Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
+        Train validTrain = train.orElseThrow(() -> new IllegalArgumentException("No valid train for supplied ID."));
         validTrain.setDockerImageUrl(trainDto.getDockerImageUrl());
         validTrain.setCalculationStatus(trainDto.getCalculationStatus());
         validTrain.setName(trainDto.getName());
@@ -94,10 +95,10 @@ public class TrainController {
     @ApiOperation(value="Delete an existing train.")
     @DeleteMapping("/trains/{id}")
     public ResponseEntity<Void> deleteTrain(@ApiParam(value = "ID of the station to delete.", required = true)
-                                            @PathVariable Long id, Authentication authentication) throws Exception {
+                                            @PathVariable Long id, Authentication authentication) throws IllegalArgumentException {
         log.debug("REST request to delete train : {}", id);
         Optional<Train> train = trainRepository.findById(id);
-        Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
+        Train validTrain = train.orElseThrow(() -> new IllegalArgumentException("No valid train for supplied ID."));
         if(!validTrain.getOwnerId().equals(authentication.getName())){
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }

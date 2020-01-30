@@ -72,16 +72,16 @@ public class TrainTaskController {
 
     @PostMapping("trains/{id}/tasks")
     public ResponseEntity<Task> createTask(@PathVariable Long id, @RequestBody TaskDto taskDto,
-                                           Authentication authentication) throws Exception {
+                                           Authentication authentication) throws IllegalArgumentException {
         log.debug("REST request to save Task : {}", taskDto);
         if (taskDto.getId() != null) {
-            throw new Exception("A new task cannot already have an ID");
+            throw new IllegalArgumentException("A new task cannot already have an ID");
         }
         Task task = modelMapper.map(taskDto, Task.class);
         Optional<Train> train = trainRepository.findById(id);
         Optional<Station> station = stationRepository.findById(taskDto.getStationId());
-        Train validTrain = train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
-        Station validStation = station.orElseThrow(() -> new Exception("No valid station for supplied ID."));
+        Train validTrain = train.orElseThrow(() -> new IllegalArgumentException("No valid train for supplied ID."));
+        Station validStation = station.orElseThrow(() -> new IllegalArgumentException("No valid station for supplied ID."));
         task.setTrainId(validTrain.getId());
         task.setStationId(validStation.getId());
         Task result = taskRepository.save(task);
@@ -91,18 +91,18 @@ public class TrainTaskController {
 
     @PutMapping("trains/{id}/tasks")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto, Authentication authentication)
-            throws Exception {
+            throws IllegalArgumentException {
         log.debug("REST request to update task : {}", taskDto);
         if (taskDto.getId() == null) {
             throw new IllegalArgumentException("Invalid id");
         }
         Optional<Train> train = trainRepository.findById(id);
-        train.orElseThrow(() -> new Exception("No valid train for supplied ID."));
+        train.orElseThrow(() -> new IllegalArgumentException("No valid train for supplied ID."));
 
         Optional<Task> task = taskRepository.findById(taskDto.getId());
-        Task validTask = task.orElseThrow(() -> new Exception("No valid task for supplied ID."));
+        Task validTask = task.orElseThrow(() -> new IllegalArgumentException("No valid task for supplied ID."));
         if(!validTask.getStationId().equals(taskDto.getStationId())){
-            throw new Exception("Cannot update station ID of task.");
+            throw new IllegalArgumentException("Cannot update station ID of task.");
         }
         validTask.setCalculationStatus(taskDto.getCalculationStatus());
         validTask.setResult(taskDto.getResult());

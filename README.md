@@ -1,7 +1,7 @@
 # Railway Central
 Railway Central orchestrates railways trains. It does not do any actual train processing other than delegating the trains to their appropriate stations. It keeps track of the statusses of trains and tasks, which can be altered using the API. The API can also be used to create new trains and tasks.
 
-##Keycloak
+## Keycloak
 Keycloak is used for authentication and authorization. The *docker* folder contains a docker-compose file that will run keycloak with some preset test users and a testclient: *docker-compose -f keycloak.yml*.
 Authentication is already enabled, authorization has been prototyped in the past. It can be added by adding roles to users and stations in keycloak and reading them from central.
 In order to add or alter entries in Keycloak, visit *http://localhost:9080*. The default username/password is admin/admin. 

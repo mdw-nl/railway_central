@@ -26,5 +26,6 @@ public class Task {
     private Long stationId;
     private String input;
     private boolean master;
+    @Column(nullable = false)
     private Long iteration;
 }

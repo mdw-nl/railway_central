@@ -1,6 +1,8 @@
 package nl.medicaldataworks.railway.central.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -9,6 +11,8 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name = "task")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +26,5 @@ public class Task {
     private Long stationId;
     private String input;
     private boolean master;
+    private Long iteration;
 }

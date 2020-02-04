@@ -53,6 +53,7 @@ public class SecurityConfiguration  extends KeycloakWebSecurityConfigurerAdapter
         super.configure(http);
         http
             .authorizeRequests()
+            .antMatchers("/swagger-ui.html").authenticated()
             .antMatchers("/api/**").authenticated()
             .and()
             .csrf().disable(); //TODO: turn back on?

@@ -28,4 +28,13 @@ public class TaskService {
                                 Optional<Long> stationId){
         return taskRepository.findByOptionalCalculationStatusAndOptionalStationId(pageable, calculationStatus, stationId);
     }
+
+    public Page<Task> findTasks(Pageable pageable,
+                                Long trainId,
+                                Optional<CalculationStatus> calculationStatus,
+                                Optional<Long> stationId,
+                                Optional<Long> iteration){
+        return taskRepository.findByTrainIdAndOptionalCalculationStatusAndOptionalStationIdAndOptionalIteration(pageable, trainId,
+                                                                                            calculationStatus, stationId, iteration);
+    }
 }

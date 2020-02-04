@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface TrainRepository extends JpaRepository<Train, Long> {
-    Page<Train> findByOwnerId(Pageable pageable, String ownerId);
     Page<Train> findByCalculationStatusNotIn(Pageable pageable, List<CalculationStatus> statuses);
+
+    Page<Train> findByCalculationStatusIn(Pageable pageable, List<CalculationStatus> statuses);
 }

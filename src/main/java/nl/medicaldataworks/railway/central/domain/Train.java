@@ -18,5 +18,5 @@ public class Train {
     private String ownerId;
     @Column(nullable = false)
     private CalculationStatus calculationStatus;
-    private Long masterTask;
+    private Long currentIteration;
 }

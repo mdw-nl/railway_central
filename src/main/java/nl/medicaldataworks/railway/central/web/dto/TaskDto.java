@@ -12,5 +12,6 @@ public class TaskDto {
     private Long trainId;
     private String input;
     private boolean master;
+    private Long iteration;
 }
 

@@ -7,7 +7,7 @@ server:
   port: 8080
 
 keycloak:
-  auth-server-url: http://railway.medicaldataworks.nl:9080/auth
+  auth-server-url: http://localhost:9080/auth
   realm: railway
   resource: central
   allow-any-hostname: true
@@ -32,7 +32,7 @@ spring:
     password:
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: create-drop
     database-platform: org.hibernate.dialect.H2Dialect
     database: H2
     properties:

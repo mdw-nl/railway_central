@@ -18,5 +18,6 @@ public class Train {
     private String ownerId;
     @Column(nullable = false)
     private CalculationStatus calculationStatus;
+    @Column(nullable = false)
     private Long currentIteration;
 }

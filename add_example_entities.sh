@@ -1,5 +1,5 @@
-client_name='taestclient'
-client_secret='f4a9f6a3-c3d1-4cfb-8c32-ff72aaf9544c'
+client_name='testclient'
+client_secret='fe95901a-a153-47db-a70c-0aaba4de1cf3'
 access_token=$(curl -X POST -u "$client_name:$client_secret" -d "grant_type=client_credentials" http://localhost:9080/auth/realms/railway/protocol/openid-connect/token | python3 -c "import sys, json; print(json.load(sys.stdin)['access_token'])")
 train_id=$(curl --verbose --location --request POST http://localhost:8080/api/stations?access_token=$access_token --header 'Content-Type: application/json' --data-raw '{"name":"'$client_name'"}'  | python3 -c "import sys, json; print(json.load(sys.stdin)['id'])")
 echo "add station response train id: $train_id"

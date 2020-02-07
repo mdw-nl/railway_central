@@ -22,5 +22,3 @@ services:
       - 9080:9080
       - 9443:9443
       - 10990:10990
-    networks:
-      - railway

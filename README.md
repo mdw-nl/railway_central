@@ -1,5 +1,8 @@
 # Railway Central
-Railway Central orchestrates railways trains. It does not do any actual train processing other than delegating the trains to their appropriate stations. It keeps track of the statusses of trains and tasks, which can be altered using the API. The API can also be used to create new trains and tasks.
+Railway Central orchestrates railways trains, which are docker containers created by researchers. It does not do any actual train processing other than delegating the trains to their appropriate stations (the client software). It keeps track of the statusses of trains and tasks (each train consists of one or more tasks per station. These represent an actual run of the software on the docker container), which can be altered using the API. The API can also be used to create new trains and tasks.
+
+## Running a first example
+In order to run a first example, run Keycloak and add the appropriate users and clients (see below). Then start central by running *mvn*. Next, clone the station repository and follow the instructions to build and run two separate station applications. Once all three applications are running, edit and run *add_example_entities.sh*. This shell script will perform API calls to central to add the stations, trains and tasks. Afterwards the station applications will pick up the tasks and start processing.
 
 ## Keycloak
 Keycloak is used for authentication and authorization. The *src/main/docker* folder contains a docker-compose file that will run keycloak with some preset test users and a testclient. In the *src/main/docker* folder, run: *docker-compose -f keycloak.yml*.

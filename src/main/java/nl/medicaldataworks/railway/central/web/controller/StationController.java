@@ -77,6 +77,10 @@ public class StationController {
         if (stationDto.getId() != null) {
             throw new IllegalArgumentException("A new station cannot already have an ID");
         }
+        Optional<Station> existingStation = stationRepository.findByName(stationDto.getName());
+        if(existingStation.isPresent()){
+            throw new IllegalArgumentException("A station with that name already exists");
+        }
         Station station = modelMapper.map(stationDto, Station.class);
         Station result = stationRepository.save(station);
         return ResponseEntity.created(new URI("/api/stations/" + result.getId()))

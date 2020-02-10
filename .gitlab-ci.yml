@@ -6,7 +6,7 @@ services:
 stages:
   - build
   - dockerize
-#  - deploy
+  - deploy
 
 build:
   stage: build

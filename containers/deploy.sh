@@ -6,6 +6,5 @@ docker pull registry.gitlab.com/medicaldataworks/railway/central:$1
 docker run -d \
     --name central \
     --network=railway \
-    -v /opt/central/application.yml:/app/application.yml \
     -p 8042:8042 \
     registry.gitlab.com/medicaldataworks/railway/central:$1

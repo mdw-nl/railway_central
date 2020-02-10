@@ -18,8 +18,8 @@ build:
     - maastro
   script:
     - mvn clean package
-  only:
-    - master
+#  only:
+#    - master
 
 dockerizeBackend:
   stage: dockerize

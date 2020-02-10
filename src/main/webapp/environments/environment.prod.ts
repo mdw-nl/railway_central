@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   host: 'localhost',
-  port: 8080,
+  port: 8042,
   keycloakHost: 'localhost',
   keycloakPort: 9080
 };

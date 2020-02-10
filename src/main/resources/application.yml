@@ -4,7 +4,7 @@ logging:
     nl.medicaldataworks.railway.central: DEBUG
 
 server:
-  port: 8080
+  port: 8042
 
 keycloak:
   auth-server-url: http://localhost:9080/auth

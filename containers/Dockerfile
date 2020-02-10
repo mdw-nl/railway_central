@@ -1,11 +1,10 @@
 FROM java:8-jre
 
 RUN mkdir /app
+COPY central-*.jar /app/central.jar
 COPY run.sh /run.sh
-COPY rchive.jar /app/rchive.jar
 COPY application.yml /app/application.yml
-COPY upload-client.zip /app/upload-client.zip
 
-EXPOSE 8080
+EXPOSE 8042
 
 CMD ["sh", "run.sh"]

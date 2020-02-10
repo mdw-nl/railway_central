@@ -1,0 +1,52 @@
+image: docker:latest
+
+services:
+  - docker:dind
+
+stages:
+  - build
+  - dockerize
+#  - deploy
+
+build:
+  stage: build
+  image: maven:3.5.3-jdk-8
+  artifacts:
+    paths:
+      - target/*.jar
+  tags:
+    - maastro
+  script:
+    - mvn clean package
+  only:
+    - master
+
+dockerizeBackend:
+  stage: dockerize
+  dependencies:
+    - build
+  tags:
+    - maastro
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - cp ./target/*.jar ./containers/
+    - cd ./containers/ && docker build --pull -t "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" .
+    - docker tag "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA" "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_SHA"
+    - docker push "$CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG"
+  only:
+    - master
+#
+#deploy:
+#  stage: deploy
+#  environment:
+#    name: central
+#    url: https://dcra-central.medicaldataworks.nl
+#  tags:
+#    - web-maastro-01
+#  script:
+#    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+#    - bash run_scripts/acc/setup_base.sh
+#    - bash run_scripts/acc/setup_application.sh $CI_COMMIT_SHA
+#  only:
+#    - master

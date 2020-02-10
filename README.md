@@ -9,6 +9,14 @@ Keycloak is used for authentication and authorization. The *src/main/docker* fol
 Authentication is already enabled, authorization has been prototyped in the past. It can be added by adding roles to users and stations in keycloak and reading them from central.
 In order to add or alter entries in Keycloak, visit *http://localhost:9080*. The default username/password is admin/admin. 
 * Under the Clients tab, Testclient provides an example configuration of a client. 
+  * Go to *Administration Console* 
+  * Click on *Clients*
+  * At the top right of the clients table, click on *Create*
+  * Fill in the desired client id. This id will need to be matched in the stations *application.yml*
+  * In the resulting window, set *Access Type* to *confidential*
+  * Enable *Service Accounts Enabled* and *Authorization Enabled*
+  * Set valid Redirect URI's to *
+   
 * Under the Roles tab, maastro provies an example of a role that can be added to the client. This can be used as a means of authorizing certain calls in central based on the client.
 * Under the Users tab, testuser provides an example of a user that accesses central. This user has default password *admin* and can be used for authentication when visiting *http://localhost:8080/*
 

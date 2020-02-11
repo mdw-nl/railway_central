@@ -1,4 +1,3 @@
-docker login -u ${CI_REGISTRY_USER} -p ${CI_REGISTRY_PASSWORD} https://registry.gitlab.com
 docker pull registry.gitlab.com/medicaldataworks/railway/central:$1
 
 docker stop central

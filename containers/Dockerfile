@@ -1,6 +1,7 @@
 FROM java:8-jre
 
-RUN mkdir /app
+
+WORKDIR /
 COPY central-*.jar /app/central.jar
 COPY run.sh /run.sh
 COPY application.yml /app/application.yml

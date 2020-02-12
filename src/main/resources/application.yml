@@ -5,15 +5,18 @@ logging:
 
 server:
   port: 8080
+  forward-headers-strategy: native
 
 keycloak:
-  auth-server-url: http://localhost:9080/auth
+  auth-server-url: https://dcra-keycloak.railway.medicaldataworks.nl/auth
   realm: railway
   resource: central
   allow-any-hostname: true
   autodetect-bearer-only: true
   credentials.secret: "e5339213-1346-48b3-b25c-cbe16dc42ca6"
   enabled: true
+  confidential-port: 443
+  ssl-required: none
 
 spring:
   main:

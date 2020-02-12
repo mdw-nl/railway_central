@@ -15,7 +15,7 @@ keycloak:
   autodetect-bearer-only: true
   credentials.secret: "e5339213-1346-48b3-b25c-cbe16dc42ca6"
   enabled: true
-  confidential-port: 80
+  confidential-port: 443
 
 spring:
   main:

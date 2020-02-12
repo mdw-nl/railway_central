@@ -5,6 +5,7 @@ logging:
 
 server:
   port: 8080
+  forward-headers-strategy: native
 
 keycloak:
   auth-server-url: https://dcra-keycloak.railway.medicaldataworks.nl/auth

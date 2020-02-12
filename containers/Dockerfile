@@ -1,8 +1,9 @@
-FROM java:8-jre
+FROM openjdk:8
+
+RUN apt-get update
+RUN apt-get install -y dos2unix
 
 WORKDIR /
-
-RUN apt-get update && apt-get install -y dos2unix
 
 COPY central-*.jar /app/central.jar
 COPY run.sh /run.sh

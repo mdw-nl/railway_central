@@ -12,6 +12,6 @@ COPY application.yml /app/application.yml
 RUN dos2unix /run.sh
 RUN dos2unix /app/**
 
-EXPOSE 8042
+EXPOSE 8080
 
 CMD ["sh", "run.sh"]

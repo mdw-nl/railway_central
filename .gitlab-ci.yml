@@ -44,7 +44,7 @@ deploy:
   stage: deploy
   environment:
     name: central
-    url: https://dcra-central.medicaldataworks.nl
+    url: https://dcra.railway.medicaldataworks.nl
   tags:
     - web-maastro-01
   script:

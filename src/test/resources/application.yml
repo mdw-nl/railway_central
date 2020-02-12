@@ -4,7 +4,7 @@ logging:
     nl.medicaldataworks.railway.central: DEBUG
 
 server:
-  port: 8042
+  port: 8080
 
 keycloak:
   enabled: false

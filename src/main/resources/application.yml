@@ -1,7 +1,10 @@
 logging:
   level:
-    ROOT: INFO
-    nl.medicaldataworks.railway.central: DEBUG
+    root: INFO
+    nl.medicaldataworks: DEBUG
+  #    org.springframework.web: DEBUG
+  file:
+    name: rchive.log
 
 server:
   port: 8080

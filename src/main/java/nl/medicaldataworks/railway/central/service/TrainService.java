@@ -34,7 +34,7 @@ public class TrainService {
         Page<Train> unCompletedTrains = trainRepository.findByCalculationStatusNotIn(null, statuses);
         for(Train unCompletedTrain : unCompletedTrains){
             Page<Task> tasks = taskRepository
-                    .findByIteration(null, unCompletedTrain.getCurrentIteration());
+                    .findByTrainIdAndIteration(null,unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration());
             long completedTasksCount = tasks.stream().filter(task -> task.getCalculationStatus().equals(CalculationStatus.COMPLETED)).count();
             if(tasks.getTotalElements() > 0 && tasks.getTotalElements() == completedTasksCount){
                 startNewIteration(unCompletedTrain);

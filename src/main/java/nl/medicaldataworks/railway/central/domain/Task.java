@@ -28,6 +28,10 @@ public class Task {
     private boolean master;
     @Column(nullable = false)
     private Long iteration;
+    @Lob
+    @Column
     private String error;
+    @Lob
+    @Column
     private String logLocation;
 }

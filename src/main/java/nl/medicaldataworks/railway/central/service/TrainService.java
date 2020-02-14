@@ -34,14 +34,20 @@ public class TrainService {
         statuses.add(CalculationStatus.ERRORED);
         Page<Train> unCompletedTrains = trainRepository.findByCalculationStatusNotIn(null, statuses);
         log.debug("Uncompleted trains found: {}", unCompletedTrains.toList());
-        for(Train unCompletedTrain : unCompletedTrains){
+        for(Train unCompletedTrain : unCompletedTrains) {
             Page<Task> tasks = taskRepository
-                    .findByTrainIdAndIteration(null,unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration());
+                    .findByTrainIdAndIteration(null, unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration());
             log.trace("Tasks for uncompleted train {}: {}", unCompletedTrain, tasks);
-            long completedTasksCount = tasks.stream().filter(task -> task.getCalculationStatus().equals(CalculationStatus.COMPLETED)).count();
-            log.trace("Found {} completed tasks for train: {}", completedTasksCount, unCompletedTrain);
-            if(tasks.getTotalElements() > 0 && tasks.getTotalElements() == completedTasksCount){
-                startNewIteration(unCompletedTrain);
+            boolean failedTasks = tasks.stream().anyMatch(task -> task.getCalculationStatus().equals(CalculationStatus.ERRORED));
+            if(failedTasks){
+                unCompletedTrain.setCalculationStatus(CalculationStatus.ERRORED);
+                trainRepository.save(unCompletedTrain);
+            } else {
+                long completedTasksCount = tasks.stream().filter(task -> task.getCalculationStatus().equals(CalculationStatus.COMPLETED)).count();
+                log.trace("Found {} completed tasks for train: {}", completedTasksCount, unCompletedTrain);
+                if(tasks.getTotalElements() > 0 && tasks.getTotalElements() == completedTasksCount){
+                    startNewIteration(unCompletedTrain);
+                }
             }
         }
     }

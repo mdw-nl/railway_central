@@ -65,7 +65,7 @@ public class TrainService {
                 .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(), unCompletedTrain.getId());
         Task currentMasterTask = new Task(null, new Date(), unCompletedTrain.getId(),
                 CalculationStatus.REQUESTED, null, previousMasterTask.get().getStationId(), previousMasterTask.get().getResult(),
-                true, unCompletedTrain.getCurrentIteration() + 1);
+                true, unCompletedTrain.getCurrentIteration() + 1, null, null);
         taskRepository.save(currentMasterTask);
     }
 }

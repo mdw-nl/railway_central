@@ -1,5 +1,12 @@
 version: '2'
 services:
+  keycloak_db:
+    image: postgres:10.4
+    volumes:
+      - ./database/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=keycloak
+      - POSTGRES_PASSWORD=AblexaVerEsT
   keycloak:
     image: jboss/keycloak:7.0.0
     command:
@@ -22,3 +29,7 @@ services:
       - 9080:9080
       - 9443:9443
       - 10990:10990
+    links:
+      - beslis_db:dbhost
+    depends_on:
+      - "beslis_db"

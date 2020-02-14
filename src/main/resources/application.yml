@@ -1,7 +1,7 @@
 logging:
   level:
     root: INFO
-    nl.medicaldataworks: DEBUG
+    nl.medicaldataworks: TRACE
   #    org.springframework.web: DEBUG
   file:
     name: central.log

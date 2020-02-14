@@ -4,7 +4,7 @@ logging:
     nl.medicaldataworks: DEBUG
   #    org.springframework.web: DEBUG
   file:
-    name: rchive.log
+    name: central.log
 
 server:
   port: 8080

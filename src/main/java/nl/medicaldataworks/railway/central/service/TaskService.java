@@ -26,6 +26,7 @@ public class TaskService {
     public Page<Task> findTasks(Pageable pageable,
                                 Optional<CalculationStatus> calculationStatus,
                                 Optional<Long> stationId){
+        log.trace("Finding tasks for status: {} and station id: {}", calculationStatus, stationId);
         return taskRepository.findByOptionalCalculationStatusAndOptionalStationId(pageable, calculationStatus, stationId);
     }
 
@@ -34,6 +35,7 @@ public class TaskService {
                                 Optional<CalculationStatus> calculationStatus,
                                 Optional<Long> stationId,
                                 Optional<Long> iteration){
+        log.trace("Finding tasks for status: {}, iteration: {} and station id: {}", calculationStatus, stationId);
         return taskRepository.findByTrainIdAndOptionalCalculationStatusAndOptionalStationIdAndOptionalIteration(pageable, trainId,
                                                                                             calculationStatus, stationId, iteration);
     }

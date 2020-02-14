@@ -28,14 +28,18 @@ public class TrainService {
 
     @Scheduled(fixedDelay = 5000)
     public void pollMasterTasks() {
+        log.trace("Polling master tasks.");
         List<CalculationStatus> statuses = new ArrayList<>();
         statuses.add(CalculationStatus.COMPLETED);
         statuses.add(CalculationStatus.ERRORED);
         Page<Train> unCompletedTrains = trainRepository.findByCalculationStatusNotIn(null, statuses);
+        log.debug("Uncompleted trains found: {}", unCompletedTrains);
         for(Train unCompletedTrain : unCompletedTrains){
             Page<Task> tasks = taskRepository
                     .findByTrainIdAndIteration(null,unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration());
+            log.trace("Tasks for uncompleted train: {}", tasks);
             long completedTasksCount = tasks.stream().filter(task -> task.getCalculationStatus().equals(CalculationStatus.COMPLETED)).count();
+            log.trace("Found {} completed tasks for train: {}", completedTasksCount, unCompletedTrain);
             if(tasks.getTotalElements() > 0 && tasks.getTotalElements() == completedTasksCount){
                 startNewIteration(unCompletedTrain);
             }
@@ -43,12 +47,14 @@ public class TrainService {
     }
 
     private void startNewIteration(Train unCompletedTrain) {
+        log.debug("Starting new iteration for {}", unCompletedTrain);
         createNewMasterTask(unCompletedTrain);
         unCompletedTrain.setCurrentIteration(unCompletedTrain.getCurrentIteration() + 1);
         trainRepository.save(unCompletedTrain);
     }
 
     private void createNewMasterTask(Train unCompletedTrain) {
+        log.debug("Starting new master task for {}", unCompletedTrain);
         Optional<Task> previousMasterTask = taskRepository
                 .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(), unCompletedTrain.getId());
         Task currentMasterTask = new Task(null, new Date(), unCompletedTrain.getId(),

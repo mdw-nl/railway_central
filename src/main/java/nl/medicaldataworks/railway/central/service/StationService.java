@@ -17,6 +17,7 @@ public class StationService {
     }
 
     public Optional<Long> getStationIdForStationName(Optional<String> stationName){
+        log.trace("Getting station id for name: {}", stationName);
         if(!stationName.isPresent()){
             return Optional.empty();
         }

@@ -13,5 +13,7 @@ public class TaskDto {
     private String input;
     private boolean master;
     private Long iteration;
+    private String error;
+    private String logLocation;
 }
 

@@ -28,7 +28,7 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
 
     Optional<Task> findByIterationAndTrainIdAndMasterTrue(Long currentIteration, Long trainId);
 
-    Page<Task> findByIteration(Pageable pageable, Long currentIteration);
+    Page<Task> findByTrainIdAndIteration(Pageable pageable, Long trainId, Long currentIteration);
 
     @Query("select data from Task data where (:trainId = data.trainId) and " +
             "(:calculationStatus is null or data.calculationStatus = :calculationStatus) and " +

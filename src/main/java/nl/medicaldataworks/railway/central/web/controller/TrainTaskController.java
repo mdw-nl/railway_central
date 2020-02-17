@@ -106,6 +106,8 @@ public class TrainTaskController {
         }
         validTask.setCalculationStatus(taskDto.getCalculationStatus());
         validTask.setResult(taskDto.getResult());
+        validTask.setError(taskDto.getError());
+        validTask.setLogLocation(taskDto.getLogLocation());
         Task result = taskRepository.save(validTask);
         return ResponseEntity.ok()
                 .body(result);

@@ -30,8 +30,8 @@ dockerizeBackend:
     - maastro
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - cp ./target/*.jar ./containers/
-    - cp ./src/main/resources/application.yml ./containers/
+    - cp ./target/*.jar ./containers/appdata-mount
+    - cp ./src/main/resources/application.yml ./containers/appdata-mount
     - cd ./containers/
     - docker build --network=host --pull -t "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}" .
     - docker tag "${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHA}" "${CI_REGISTRY_IMAGE}:${CI_COMMIT_REF_SLUG}"

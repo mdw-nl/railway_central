@@ -5,9 +5,9 @@ RUN apt-get install -y dos2unix
 
 WORKDIR /
 
-COPY central-*.jar /app/central.jar
+COPY appdata-mount/central-*.jar /app/central.jar
+COPY appdata-mount/application.yml /app/application.yml
 COPY run.sh /run.sh
-COPY application.yml /app/application.yml
 
 RUN dos2unix /run.sh
 RUN dos2unix /app/**

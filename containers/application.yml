@@ -1,23 +1,28 @@
 logging:
   level:
-    ROOT: INFO
-    nl.medicaldataworks.railway.central: DEBUG
+    root: INFO
+    nl.medicaldataworks: TRACE
+  file:
+    name: central.log
 
 server:
   port: 8080
+  forward-headers-strategy: native
 
 keycloak:
-  auth-server-url: http://localhost:9080/auth
+  auth-server-url: https://dcra-keycloak.railway.medicaldataworks.nl/auth
   realm: railway
   resource: central
   allow-any-hostname: true
   autodetect-bearer-only: true
-  credentials.secret: "e5339213-1346-48b3-b25c-cbe16dc42ca6"
+  credentials.secret: "d8ae4438-5b52-48cb-8d79-651140740c88"
   enabled: true
+  confidential-port: 443
+  ssl-required: none
 
 spring:
   main:
-   allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: true
   application:
     name: railway
   profiles:
@@ -27,7 +32,7 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:h2:file:./target/h2db/db/railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    url: jdbc:h2:file:./railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
     username: sa
     password:
   jpa:

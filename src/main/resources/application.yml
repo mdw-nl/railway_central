@@ -16,7 +16,7 @@ keycloak:
   resource: central
   allow-any-hostname: true
   autodetect-bearer-only: true
-  credentials.secret: "8b5d1001-4a2c-42df-b3a0-9cd1b19735df"
+  credentials.secret: "1b620a08-1881-4c4f-9d58-e3327545b5b5"
   enabled: true
   confidential-port: 443
   ssl-required: none

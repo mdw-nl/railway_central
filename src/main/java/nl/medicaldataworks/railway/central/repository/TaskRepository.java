@@ -18,14 +18,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
                                                                    Optional<CalculationStatus> calculationStatus,
                                                                    Optional<Long> stationId);
 
-    @Query("select data from Task data where (:trainId = data.trainId) and " +
-            "(:calculationStatus is null or data.calculationStatus = :calculationStatus) and "
-            + "(:stationId is null or data.stationId = :stationId)")
-    Page<Task> findByTrainIdAndOptionalCalculationStatusAndOptionalStationId(Pageable pageable,
-                                                                             Long trainId,
-                                                                             Optional<CalculationStatus> calculationStatus,
-                                                                             Optional<Long> stationId);
-
     Optional<Task> findByIterationAndTrainIdAndMasterTrue(Long currentIteration, Long trainId);
 
     Page<Task> findByTrainIdAndIteration(Pageable pageable, Long trainId, Long currentIteration);
@@ -39,9 +31,9 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
             Pageable pageable, Long trainId, Optional<CalculationStatus> calculationStatus, Optional<Long> stationId,
             Optional<Long> iteration);
 
-    Page<Task> findByTrainIdAndIterationAndMasterAndCalculationStatus(Pageable pageable,
+    Page<Task> findByTrainIdAndIterationAndCalculationStatusAndMaster(Pageable pageable,
                                                                       Long trainId,
                                                                       Long currentIteration,
-                                                                      boolean master,
-                                                                      CalculationStatus calculationStatus);
+                                                                      CalculationStatus calculationStatus,
+                                                                      boolean master);
 }

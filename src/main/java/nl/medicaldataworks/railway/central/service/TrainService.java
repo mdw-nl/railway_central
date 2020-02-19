@@ -44,19 +44,22 @@ public class TrainService {
                 trainRepository.save(unCompletedTrain);
             } else {
                 Optional<Task> currentMasterTask =
-                        taskRepository.findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getId(),
-                                unCompletedTrain.getCurrentIteration());
+                        taskRepository.findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(),
+                                                                              unCompletedTrain.getId());
+                log.trace("current master task: {}", currentMasterTask);
                 if(currentMasterTask.isPresent() &&
                         currentMasterTask.get().getCalculationStatus().equals(CalculationStatus.COMPLETED)){
                     Page<Task> currentCompletedClientTasks =
-                            taskRepository.findByTrainIdAndIterationAndMasterAndCalculationStatus(null,
+                            taskRepository.findByTrainIdAndIterationAndCalculationStatusAndMaster(null,
                                     unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration(),
-                                    false, CalculationStatus.COMPLETED);
+                                    CalculationStatus.COMPLETED, false);
+                    log.trace("client task count: {}, current completed tasks: {}",
+                            unCompletedTrain.getClientTaskCount(),
+                            currentCompletedClientTasks.stream().count());
                     if(unCompletedTrain.getClientTaskCount() == currentCompletedClientTasks.stream().count()){
                         startNewIteration(unCompletedTrain);
                     }
                 }
-
             }
         }
     }

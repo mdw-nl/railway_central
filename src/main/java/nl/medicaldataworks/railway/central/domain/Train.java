@@ -20,4 +20,5 @@ public class Train {
     private CalculationStatus calculationStatus;
     @Column(nullable = false)
     private Long currentIteration;
+    private Long clientTaskCount;
 }

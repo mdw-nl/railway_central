@@ -38,4 +38,10 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     findByTrainIdAndOptionalCalculationStatusAndOptionalStationIdAndOptionalIteration(
             Pageable pageable, Long trainId, Optional<CalculationStatus> calculationStatus, Optional<Long> stationId,
             Optional<Long> iteration);
+
+    Page<Task> findByTrainIdAndIterationAndMasterAndCalculationStatus(Pageable pageable,
+                                                                      Long trainId,
+                                                                      Long currentIteration,
+                                                                      boolean master,
+                                                                      CalculationStatus calculationStatus);
 }

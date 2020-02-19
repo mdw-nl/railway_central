@@ -20,6 +20,9 @@ In order to add or alter entries in Keycloak, visit *http://localhost:9080*. The
 * Under the Roles tab, maastro provies an example of a role that can be added to the client. This can be used as a means of authorizing certain calls in central based on the client.
 * Under the Users tab, testuser provides an example of a user that accesses central. This user has default password *admin* and can be used for authentication when visiting *http://localhost:8080/*
 
+## Swagger UI
+Swagger is currently running at https://dcra.railway.medicaldataworks.nl/swagger-ui.html. This can be used as API documentation and an easy way to access the API (Be sure to login using the same browser first).
+
 ## Design remarks 
 We're using a repository pattern for JPA relations: https://stackoverflow.com/questions/51763093/spring-boot-how-to-persist-one-to-many-relation-separately-using-repository
 In order to preload some example entities, set the *ddl-auto* in the application.yml to *validate*, copy data.sql and schema.sql from the test/resources to the main/resources folder and remove the h2 database before starting.

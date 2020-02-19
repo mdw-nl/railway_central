@@ -43,11 +43,13 @@ public class TrainService {
                 unCompletedTrain.setCalculationStatus(CalculationStatus.ERRORED);
                 trainRepository.save(unCompletedTrain);
             } else {
-                long completedTasksCount = currentTasksForTrainId.stream().filter(task -> task.getCalculationStatus().equals(CalculationStatus.COMPLETED)).count();
-                log.trace("Found {} completed tasks for train: {}", completedTasksCount, unCompletedTrain);
-                if(currentTasksForTrainId.getTotalElements() > 0 && currentTasksForTrainId.getTotalElements() == completedTasksCount){
-                    startNewIteration(unCompletedTrain);
-                }
+                    Page<Task> currentCompletedClientTasks =
+                            taskRepository.findByTrainIdAndIterationAndMasterAndCalculationStatus(null,
+                                    unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration(),
+                                    false, CalculationStatus.COMPLETED);
+                    if(unCompletedTrain.getClientTaskCount() == currentCompletedClientTasks.stream().count()){
+                        startNewIteration(unCompletedTrain);
+                    }
             }
         }
     }

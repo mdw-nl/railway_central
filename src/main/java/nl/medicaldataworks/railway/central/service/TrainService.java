@@ -51,7 +51,7 @@ public class TrainService {
                         currentMasterTask.get().getCalculationStatus().equals(CalculationStatus.COMPLETED)){
                     Page<Task> currentCompletedClientTasks =
                             taskRepository.findByTrainIdAndIterationAndCalculationStatusAndMaster(null,
-                                    unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration(),
+                                    unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration() + 1,
                                     CalculationStatus.COMPLETED, false);
                     log.trace("client task count: {}, current completed tasks: {}",
                             unCompletedTrain.getClientTaskCount(),

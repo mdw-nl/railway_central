@@ -46,7 +46,7 @@ public class TrainService {
                 Optional<Task> previousMasterTask =
                         taskRepository.findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration() - 1,
                                                                               unCompletedTrain.getId());
-                log.trace("current master task: {}", previousMasterTask);
+                log.trace("previous master task: {}", previousMasterTask);
                 if(previousMasterTask.isPresent() &&
                         previousMasterTask.get().getCalculationStatus().equals(CalculationStatus.COMPLETED)){
                     Page<Task> currentCompletedClientTasks =
@@ -71,7 +71,7 @@ public class TrainService {
         private void createNewMasterTask(Train unCompletedTrain) {
             log.debug("Starting new master task for {}", unCompletedTrain);
             Optional<Task> previousMasterTask = taskRepository
-                    .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(), unCompletedTrain.getId());
+                    .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration() - 1, unCompletedTrain.getId());
             Task currentMasterTask = new Task(null, new Date(), unCompletedTrain.getId(),
                     CalculationStatus.REQUESTED, null, previousMasterTask.get().getStationId(), previousMasterTask.get().getResult(),
                     true, unCompletedTrain.getCurrentIteration() + 1, null, null);

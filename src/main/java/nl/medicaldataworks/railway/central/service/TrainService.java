@@ -53,30 +53,28 @@ public class TrainService {
                             taskRepository.findByTrainIdAndIterationAndCalculationStatusAndMaster(null,
                                     unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration() + 1,
                                     CalculationStatus.COMPLETED, false);
+                    long currentClientTaskCount = currentCompletedClientTasks.stream().count();
                     log.trace("client task count: {}, current completed tasks: {}",
                             unCompletedTrain.getClientTaskCount(),
-                            currentCompletedClientTasks.stream().count());
-                    if(unCompletedTrain.getClientTaskCount() == currentCompletedClientTasks.stream().count()){
-                        startNewIteration(unCompletedTrain);
+                            currentClientTaskCount);
+                    if(currentClientTaskCount > 0
+                            && unCompletedTrain.getClientTaskCount() == currentClientTaskCount){
+                        log.debug("Starting new iteration for {}", unCompletedTrain);
+                        createNewMasterTask(unCompletedTrain);
+                        trainRepository.save(unCompletedTrain);
                     }
                 }
             }
         }
     }
 
-    private void startNewIteration(Train unCompletedTrain) {
-        log.debug("Starting new iteration for {}", unCompletedTrain);
-        createNewMasterTask(unCompletedTrain);
-        trainRepository.save(unCompletedTrain);
-    }
-
-    private void createNewMasterTask(Train unCompletedTrain) {
-        log.debug("Starting new master task for {}", unCompletedTrain);
-        Optional<Task> previousMasterTask = taskRepository
-                .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(), unCompletedTrain.getId());
-        Task currentMasterTask = new Task(null, new Date(), unCompletedTrain.getId(),
-                CalculationStatus.REQUESTED, null, previousMasterTask.get().getStationId(), previousMasterTask.get().getResult(),
-                true, unCompletedTrain.getCurrentIteration() + 1, null, null);
-        taskRepository.save(currentMasterTask);
+        private void createNewMasterTask(Train unCompletedTrain) {
+            log.debug("Starting new master task for {}", unCompletedTrain);
+            Optional<Task> previousMasterTask = taskRepository
+                    .findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(), unCompletedTrain.getId());
+            Task currentMasterTask = new Task(null, new Date(), unCompletedTrain.getId(),
+                    CalculationStatus.REQUESTED, null, previousMasterTask.get().getStationId(), previousMasterTask.get().getResult(),
+                    true, unCompletedTrain.getCurrentIteration() + 1, null, null);
+            taskRepository.save(currentMasterTask);
     }
 }

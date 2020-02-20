@@ -108,6 +108,7 @@ public class TrainTaskController {
         validTask.setResult(taskDto.getResult());
         validTask.setError(taskDto.getError());
         validTask.setLogLocation(taskDto.getLogLocation());
+        validTask.setIteration(taskDto.getIteration());
         Task result = taskRepository.save(validTask);
         return ResponseEntity.ok()
                 .body(result);

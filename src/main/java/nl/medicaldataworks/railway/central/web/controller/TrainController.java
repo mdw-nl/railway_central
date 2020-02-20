@@ -86,6 +86,8 @@ public class TrainController {
         validTrain.setDockerImageUrl(trainDto.getDockerImageUrl());
         validTrain.setCalculationStatus(trainDto.getCalculationStatus());
         validTrain.setName(trainDto.getName());
+        validTrain.setClientTaskCount(trainDto.getClientTaskCount());
+        validTrain.setCurrentIteration(trainDto.getCurrentIteration());
         Train result = trainRepository.save(validTrain);
         return ResponseEntity.ok()
                 .body(result);

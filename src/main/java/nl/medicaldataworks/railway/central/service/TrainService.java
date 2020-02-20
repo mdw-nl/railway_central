@@ -43,15 +43,15 @@ public class TrainService {
                 unCompletedTrain.setCalculationStatus(CalculationStatus.ERRORED);
                 trainRepository.save(unCompletedTrain);
             } else {
-                Optional<Task> currentMasterTask =
-                        taskRepository.findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration(),
+                Optional<Task> previousMasterTask =
+                        taskRepository.findByIterationAndTrainIdAndMasterTrue(unCompletedTrain.getCurrentIteration() - 1,
                                                                               unCompletedTrain.getId());
-                log.trace("current master task: {}", currentMasterTask);
-                if(currentMasterTask.isPresent() &&
-                        currentMasterTask.get().getCalculationStatus().equals(CalculationStatus.COMPLETED)){
+                log.trace("current master task: {}", previousMasterTask);
+                if(previousMasterTask.isPresent() &&
+                        previousMasterTask.get().getCalculationStatus().equals(CalculationStatus.COMPLETED)){
                     Page<Task> currentCompletedClientTasks =
                             taskRepository.findByTrainIdAndIterationAndCalculationStatusAndMaster(null,
-                                    unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration() + 1,
+                                    unCompletedTrain.getId(), unCompletedTrain.getCurrentIteration(),
                                     CalculationStatus.COMPLETED, false);
                     long currentClientTaskCount = currentCompletedClientTasks.stream().count();
                     log.trace("client task count: {}, current completed tasks: {}",

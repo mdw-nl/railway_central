@@ -67,7 +67,6 @@ public class TrainService {
     private void startNewIteration(Train unCompletedTrain) {
         log.debug("Starting new iteration for {}", unCompletedTrain);
         createNewMasterTask(unCompletedTrain);
-        unCompletedTrain.setCurrentIteration(unCompletedTrain.getCurrentIteration() + 1);
         trainRepository.save(unCompletedTrain);
     }
 

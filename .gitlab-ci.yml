@@ -46,6 +46,7 @@ deploy:
     - web-maastro-01
   script:
     - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - bash src/main/docker/deploy.sh $CI_COMMIT_SHA
+    - cd src/main/docker
+    - bash deploy.sh $CI_COMMIT_SHA
   only:
     - master

@@ -39,5 +39,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQL9Dialect
+    properties:
+      hibernate.temp.use_jdbc_metadata_defaults: false
   messages:
     basename: i18n/messages

@@ -33,19 +33,11 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:postgresql://localhost:5432/railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    url: jdbc:postgresql://localhost:5432/railway
     username: railway
     password: AblexaVerEsT
   jpa:
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
-    database: postgresql
-    properties:
-      hibernate.id.new_generator_mappings: true
-      hibernate.connection.provider_disables_autocommit: true
-      hibernate.cache.use_second_level_cache: false
-      hibernate.cache.use_query_cache: false
-      hibernate.generate_statistics: false
   messages:
     basename: i18n/messages

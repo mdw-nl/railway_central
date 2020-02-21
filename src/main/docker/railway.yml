@@ -15,6 +15,14 @@ services:
       - POSTGRES_DB=railway
       - POSTGRES_USER=railway
       - POSTGRES_PASSWORD=AblexaVerEsT
+  railway_db2:
+    image: postgres:10.4
+    volumes:
+      - /opt/railway2-database/:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_DB=railway
+      - POSTGRES_USER=railway
+      - POSTGRES_PASSWORD=AblexaVerEsT
     ports:
       - 5432:5432
   keycloak:

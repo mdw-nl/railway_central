@@ -28,10 +28,8 @@ public class Task {
     private boolean master;
     @Column(nullable = false)
     private Long iteration;
-    @Lob
-    @Column
+    @Column(columnDefinition = "VARCHAR(20000)")
     private String error;
-    @Lob
-    @Column
+    @Column(columnDefinition = "VARCHAR(2000)")
     private String logLocation;
 }

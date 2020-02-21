@@ -33,7 +33,7 @@ spring:
   jmx:
     enabled: false
   datasource:
-    url: jdbc:postgresql://postgres_db:5432/railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
+    url: jdbc:postgresql://railway_db:5432/railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
     username: sa
     password:
   jpa:

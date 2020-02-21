@@ -7,6 +7,8 @@ services:
       - /opt/central/containers/application.yml:/app/application.yml
     ports:
       - 8080:8080
+    links:
+      - railway_db:railway_db
   railway_db:
     image: postgres:10.4
     volumes:

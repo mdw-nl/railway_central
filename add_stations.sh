@@ -1,5 +1,5 @@
 timl_name='timl'
-timh_secret='4be352c6-dec2-48ec-a424-e69df2832b0e'
+timh_secret='370fd4da-f8bc-4694-9267-d10d392a2bfe'
 timh_name='timh'
 johan_name='johan'
 ananya_name='ananya'

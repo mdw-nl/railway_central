@@ -1,11 +1,5 @@
-docker pull registry.gitlab.com/medicaldataworks/railway/central:$1
+docker-compose pull -f ../src/main/docker/railway.yml
 
-docker stop central
+docker-compose -f ../src/main/docker/railway.yml down
 docker rm central
-
-docker run -d \
-    --name central \
-    -p 8080:8080 \
-    -v /opt/central/containers/application.yml:/app/application.yml \
-    -v /opt/central/containers/database:/app/database \
-    registry.gitlab.com/medicaldataworks/railway/central:$1
+docker-compose -f ../src/main/docker/railway.yml up --build -d

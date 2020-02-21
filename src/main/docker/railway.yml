@@ -1,12 +1,18 @@
 version: '2'
 services:
-  keycloak_db:
+  central:
+    image: registry.gitlab.com/medicaldataworks/railway/central:latest
+    volumes:
+      - /opt/central/containers/application.yml:/app/application.yml
+    ports:
+      - 8080:8080
+  railway_db:
     image: postgres:10.4
     volumes:
-      - /opt/keycloak-database/:/var/lib/postgresql/data/
+      - /opt/railway-database/:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_DB=keycloak
-      - POSTGRES_USER=keycloak
+      - POSTGRES_DB=railway
+      - POSTGRES_USER=railway
       - POSTGRES_PASSWORD=AblexaVerEsT
   keycloak:
     image: jboss/keycloak:7.0.0
@@ -22,9 +28,9 @@ services:
       - KEYCLOAK_USER=admin
       - KEYCLOAK_PASSWORD=admin
       - DB_VENDOR=POSTGRES
-      - DB_ADDR=keycloak_db
-      - DB_DATABASE=keycloak
-      - DB_USER=keycloak
+      - DB_ADDR=railway_db
+      - DB_DATABASE=railway
+      - DB_USER=railway
       - DB_SCHEMA=public
       - DB_PASSWORD=AblexaVerEsT
     ports:
@@ -32,6 +38,6 @@ services:
       - 9443:9443
       - 10990:10990
     links:
-      - keycloak_db:dbhost
+      - railway_db:dbhost
     depends_on:
-      - "keycloak_db"
+      - "railway_db"

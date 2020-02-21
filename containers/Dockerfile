@@ -7,7 +7,7 @@ WORKDIR /
 
 COPY central-*.jar /app/central.jar
 COPY run.sh /run.sh
-COPY application.yml /app/application.yml
+COPY ../src/main/resources/application.yml /app/application.yml
 
 RUN dos2unix /run.sh
 RUN dos2unix /app/**

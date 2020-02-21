@@ -34,8 +34,8 @@ spring:
     enabled: false
   datasource:
     url: jdbc:postgresql://localhost:5432/railway;DB_CLOSE_ON_EXIT=FALSE;AUTO_RECONNECT=TRUE
-    username: sa
-    password:
+    username: railway
+    password: AblexaVerEsT
   jpa:
     hibernate:
       ddl-auto: update

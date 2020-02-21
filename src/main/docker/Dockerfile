@@ -5,8 +5,8 @@ RUN apt-get install -y dos2unix
 
 WORKDIR /
 
-COPY central-*.jar /app/central.jar
-COPY run.sh /run.sh
+COPY target/central-*.jar /app/central.jar
+COPY src/main/docker/run.sh /run.sh
 COPY ../resources/application.yml /app/application.yml
 
 RUN dos2unix /run.sh

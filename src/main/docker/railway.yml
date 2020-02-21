@@ -1,6 +1,7 @@
 version: '2'
 services:
   central:
+    network_mode: host
     image: registry.gitlab.com/medicaldataworks/railway/central:latest
     volumes:
       - /opt/central/containers/application.yml:/app/application.yml

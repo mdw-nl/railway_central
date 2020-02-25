@@ -22,8 +22,10 @@ public class Task {
     private Long trainId;
     @Column(nullable = false)
     private CalculationStatus calculationStatus;
+    @Column(columnDefinition = "TEXT")
     private String result;
     private Long stationId;
+    @Column(columnDefinition = "TEXT")
     private String input;
     private boolean master;
     @Column(nullable = false)
